@@ -1,0 +1,17 @@
+name: dependency-auditor
+description: Analyze dependencies for security, licensing, and maintenance health
+triggers:
+  - "check dependencies"
+  - "audit packages"
+  - "is this library safe"
+  - "review my imports"
+  - "dependency health"
+content: |
+  When auditing dependencies:
+
+  1. Run `npm ls --depth=2` (or equivalent for language)
+  2. Flag transitive deps with known CVEs or high maintenance burden
+  3. Suggest `overrides` or fork for problematic transitive deps
+  4. Check if direct dep can be replaced with a lighter alternative
+
+  **Why:** Dependencies are your biggest security and maintenance risk – transitive ones often hide problems.

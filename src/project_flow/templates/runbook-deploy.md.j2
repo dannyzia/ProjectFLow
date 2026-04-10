@@ -1,0 +1,63 @@
+<!--
+AI: These are the exact steps to deploy this project. Execute them in sequence. Do not improvise.
+Read first: 11-ENV-VARS.md (for prod secrets), 05-DATA-MODEL.md (for pending migrations)
+You must: Complete the pre-deploy checklist before starting. Verify health check after deploy.
+You must not: Skip the pre-deploy checklist. Proceed if any checklist item fails. Run migrations out of order.
+Human reviews this: NO — but a human must authorize production deploys. AI runs the steps, human approves.
+-->
+
+# Deployment Runbook
+**Project:** {{ project_name }}
+
+## Environments
+| Name | URL | Branch | Auto-deploy | Who can deploy |
+|------|-----|--------|-------------|----------------|
+| local | http://localhost:<!-- AI: port --> | any | — | anyone |
+| staging | <!-- AI: fill from 11-ENV-VARS.md or CI config --> | develop | yes, on merge | CI |
+| production | <!-- AI: fill --> | main | NO — manual only | <!-- AI: e.g. team lead or CI with approval gate --> |
+
+## Staging deploy
+Automatic on merge to `develop`. No manual action needed.
+Verify: <!-- AI: staging health check URL -->
+
+## Production deploy
+
+### Pre-deploy checklist
+<!-- AI: Every item must be checked before starting. If any item fails, stop. Do not proceed. -->
+- [ ] All tests pass on CI for the commit being deployed
+- [ ] Staging has been verified with the exact build being deployed
+- [ ] All pending migrations are backward-compatible (old code can run against new schema)
+- [ ] Feature flags are configured correctly for production
+- [ ] <!-- AI: add any project-specific pre-deploy check -->
+
+### Deploy steps
+<!-- AI: Execute these in order. Do not skip. Document the exact commands. -->
+1. Merge `develop` into `main` via approved pull request
+2. CI pipeline triggers — wait for green
+3. Run migrations against production:
+   ```bash
+   <!-- AI: production migration command -->
+   ```
+4. Trigger production deploy in CI/CD dashboard: <!-- AI: link -->
+5. Monitor deploy logs for errors until completion
+6. Verify health check:
+   ```bash
+   <!-- AI: e.g. curl https://app.com/api/health -->
+   ```
+7. Smoke test: <!-- AI: describe the minimum actions to confirm the deploy works -->
+
+### Rollback procedure
+<!-- AI: If anything fails after deploy, follow these steps immediately. -->
+1. In CI/CD dashboard, select the most recent passing deployment and re-deploy it.
+2. If a migration was already run:
+   ```bash
+   <!-- AI: production migration rollback command -->
+   ```
+3. Verify health check passes after rollback.
+4. Document what happened in [16-INCIDENT-RESPONSE.md](./16-INCIDENT-RESPONSE.md).
+
+## Post-deploy
+- [ ] Health check green: <!-- AI: URL -->
+- [ ] Monitor error rate for 15 minutes in: <!-- AI: monitoring dashboard link, see 17-MONITORING.md -->
+- [ ] No P1/P2 alerts triggered
+- [ ] Notify team: <!-- AI: where, e.g. Slack #deploys -->

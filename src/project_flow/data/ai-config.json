@@ -1,0 +1,19 @@
+{
+  "default_api_key": "render-proxy",
+  "prompts": {
+    "detect_tech_stack": "Given the following project configuration files, detect the tech stack. Return a JSON object with these fields: primary_language, framework, database, package_manager, test_framework, linting, formatting, typing. If a field cannot be determined, use null. Files:\n\n{files}",
+    "detect_project_name": "Given these project config files, determine the project name and a one-line description. Return JSON: {\"name\": \"...\", \"description\": \"...\"}\n\nFiles:\n\n{files}"
+  },
+  "prompt_files": {
+    "rules": "rules_prompt.md",
+    "skills": "skills_prompt.md"
+  },
+  "source_files": {
+    "skill_sources": "skill-sources.md",
+    "rule_sources": "rule-sources.md"
+  },
+  "auth_suggestions": {
+    "endpoint": "https://project-flow-api.onrender.com/proxy",
+    "model": "glm-5.1"
+  }
+}

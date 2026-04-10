@@ -1,0 +1,54 @@
+<!--
+AI: This defines how users move through the system. Implement each flow completely including error states.
+Read first: 01-PRD.md (for what flows are required), 06-API.md (for the endpoints each step calls), 09-UX-SPEC.md
+You must: Implement every path listed, including alternate paths and error states. They are not optional.
+You must not: Leave any listed error state unhandled. Redirect a user without a reason listed here.
+Human reviews this: YES — agree on flows before building UI.
+-->
+
+# User Flows
+**Project:** {{ project_name }}
+
+---
+
+## Flow: <!-- AI: Name, e.g. User Registration -->
+
+### Entry points
+<!-- AI: Where does this flow start? List all valid entry points (URL, button, trigger event, deep link). -->
+- <!-- AI: e.g. /register page, "Sign up" CTA on marketing homepage -->
+
+### Happy path
+<!-- AI: Numbered steps. Be specific. Include which API call happens at each step. -->
+1. User lands on `<!-- AI: /path -->`
+2. User fills in: <!-- AI: list fields -->
+3. Client calls `<!-- AI: POST /endpoint -->` with form data
+4. Server validates input and creates record
+5. Server returns `201` with <!-- AI: what data -->
+6. User is redirected to `<!-- AI: /path -->` with <!-- AI: confirmation message text -->
+
+### Alternate paths
+#### <!-- AI: Condition, e.g. Email already registered -->
+- At step <!-- AI: N -->, if <!-- AI: condition -->:
+- Show: `<!-- AI: exact error message shown to user -->`
+- Do: <!-- AI: what happens — stay on page, clear field, block submit -->
+- Do not: <!-- AI: what must not happen -->
+
+### Error states
+| Trigger | Behavior | User-facing message |
+|---------|---------|--------------------|
+| Server error (500) | Show toast, keep form data intact | <!-- AI: fill --> |
+| Network timeout | Show retry button | <!-- AI: fill --> |
+| <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+### Validation rules
+| Field | Rules | Error message |
+|-------|-------|---------------|
+| <!-- AI: fill --> | <!-- AI: required, max length, format --> | <!-- AI: exact message --> |
+
+### Post-conditions
+<!-- AI: What is true in the system after this flow succeeds? -->
+- Record exists in <!-- AI: table --> with status: <!-- AI: fill -->
+- <!-- AI: e.g. Confirmation email queued -->
+
+---
+<!-- AI: Copy the flow block above for each additional flow defined in 01-PRD.md. -->

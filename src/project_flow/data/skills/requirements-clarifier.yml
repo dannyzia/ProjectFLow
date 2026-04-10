@@ -1,0 +1,17 @@
+name: requirements-clarifier
+description: Ask critical questions before implementing ambiguous requirements
+triggers:
+  - "I need to build"
+  - "requirement is"
+  - "the spec says"
+  - "implement feature"
+  - "user wants"
+content: |
+  When given unclear requirements:
+
+  1. Identify stakeholders: end-user, operator, maintainer, regulator
+  2. Ask specific, answerable questions per stakeholder
+  3. Flag conflicting stakeholder needs
+  4. Propose default interpretations with owners
+
+  **Why:** Most bugs come from unclear requirements, not bad code – clarifying early saves 10x rework later.

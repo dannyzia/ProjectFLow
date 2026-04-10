@@ -1,0 +1,69 @@
+<!--
+AI: This is the API contract. Implement each endpoint exactly as specified. Request/response shapes are non-negotiable.
+Read first: 05-DATA-MODEL.md (for field types), 01-PRD.md (for auth requirements), 19-GLOSSARY.md
+You must: Return exactly the fields listed. Enforce every validation rule. Handle every listed error code.
+You must not: Add undocumented fields to responses. Return stack traces to clients. Skip input validation.
+Human reviews this: YES — the API contract is shared with consumers and must not change without versioning.
+-->
+
+# API Contract
+**Project:** {{ project_name }}
+Base URL: <!-- AI: fill from 15-RUNBOOK-DEPLOY.md or .env --> | Version: 1.0
+
+## Authentication
+<!-- AI: Describe the auth scheme. What header? What token format? How is the token obtained? -->
+- All endpoints require: `Authorization: Bearer <token>` unless marked `[public]`
+- Token obtained via: `POST /auth/login`
+- Token lifetime: <!-- AI: fill, e.g. 24h -->
+- On invalid/missing token: return `401 Unauthorized`
+
+## Idempotency
+- `POST`, `PUT`, `PATCH` endpoints that modify state require an `Idempotency-Key: <uuid>` header.
+- Server stores the key for 24 hours and returns the same response for repeated requests.
+
+## Standard error format
+```json
+{ "error": "machine_readable_code", "message": "Human-readable description." }
+```
+
+## Standard error codes
+| Code | Meaning | When to use |
+|------|---------|-------------|
+| 400 | Bad request | Missing field, validation failure |
+| 401 | Unauthorized | Missing or invalid token |
+| 403 | Forbidden | Token valid but lacks permission |
+| 404 | Not found | Resource does not exist |
+| 409 | Conflict | Resource already exists, duplicate key |
+| 422 | Unprocessable | Input valid but business rule violated |
+| 500 | Server error | Unexpected failure — log it, do not expose detail |
+
+---
+
+## Endpoints
+
+### <!-- AI: METHOD /path — e.g. POST /users -->
+<!-- AI: One sentence: what does this endpoint do? -->
+**Auth required:** yes / no (public)
+
+**Request body**
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| <!-- AI: field --> | <!-- AI: type --> | <!-- AI: yes/no --> | <!-- AI: rules --> |
+
+**Success response — <!-- AI: HTTP code, e.g. 201 Created -->**
+```json
+{
+  "id": "uuid",
+  "<!-- AI: field -->": "<!-- AI: example value -->",
+  "created_at": "YYYY-MM-DDTHH:MM:SSZ"
+}
+```
+
+**Error responses**
+| Code | Condition |
+|------|-----------|
+| 400 | <!-- AI: fill with specific validation failure --> |
+| 401 | Missing or invalid auth token |
+
+---
+<!-- AI: Copy the endpoint block above for each additional endpoint. -->

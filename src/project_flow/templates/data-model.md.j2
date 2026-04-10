@@ -1,0 +1,52 @@
+<!--
+AI: This is the source of truth for the database schema. Implement exactly as specified.
+Read first: 01-PRD.md (for entities the product needs), 19-GLOSSARY.md (for correct entity names)
+You must: Create migrations that exactly match this schema. Keep this doc in sync when schema changes.
+You must not: Add columns not listed here. Hard-delete user records. Store timestamps in local time.
+Human reviews this: YES — schema changes require human review before migration is run in production.
+-->
+
+# Data Model
+**Project:** {{ project_name }}
+
+## Hard rules
+- All tables have `id` (uuid, primary key), `created_at` (timestamp UTC), `updated_at` (timestamp UTC).
+- Soft deletes only: all tables have `deleted_at` (timestamp, nullable). Never hard-delete user records.
+- All timestamps are stored and returned as UTC.
+- Exceptions to soft-delete rule: <!-- AI: list any tables exempt, or write "None" -->
+
+## Entities
+
+### <!-- AI: EntityName — e.g. User -->
+<!-- AI: Describe what this entity represents in one sentence. -->
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| id | uuid | yes | auto | Primary key |
+| created_at | timestamp | yes | now() | Record creation time (UTC) |
+| updated_at | timestamp | yes | now() | Last modification time (UTC) |
+| deleted_at | timestamp | no | NULL | Soft delete marker (UTC) |
+| <!-- AI: field --> | <!-- AI: type --> | <!-- AI: yes/no --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+### <!-- AI: Next entity -->
+<!-- AI: Copy the entity block above for each additional entity. -->
+
+## Relationships
+<!-- AI: Define every association. Be explicit about foreign keys. -->
+| From | To | Type | Foreign key |
+|------|----|------|-------------|
+| <!-- AI: e.g. User --> | <!-- AI: e.g. Order --> | one-to-many | <!-- AI: e.g. orders.user_id --> |
+
+## Enums
+| Enum name | Values | Used in |
+|-----------|--------|--------|
+| <!-- AI: fill --> | <!-- AI: comma-separated values --> | <!-- AI: table.column --> |
+
+## Indexes
+| Table | Column(s) | Type | Reason |
+|-------|-----------|------|--------|
+| <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: btree/unique/gin --> | <!-- AI: fill --> |
+
+## Migration rules
+- All migrations must be reversible (have a down migration).
+- Test both up and down migration on a fresh DB before submitting.
+- Never modify an existing migration after it has been applied. Create a new one.

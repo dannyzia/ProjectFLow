@@ -1,0 +1,51 @@
+<!--
+AI: This defines the system structure. Follow it. Do not introduce new layers without creating an ADR in 04-ADR.md.
+Read first: 03-TECH-STACK.md, 04-ADR.md, 05-DATA-MODEL.md
+You must: Follow the component boundaries defined here. Reference this when creating new modules.
+You must not: Add services, databases, or external dependencies not listed here without creating an ADR first.
+Human reviews this: YES — agree on architecture before implementation begins.
+-->
+
+# Architecture: {{ project_name }}
+
+> **{{ project_description }}**
+
+## System overview
+<!-- AI: Describe the system in 2-3 sentences. What are the major components and how do they interact? -->
+
+## Components
+| Component | Responsibility | Technology | Communicates with |
+|-----------|---------------|------------|-------------------|
+| <!-- AI: e.g. API server --> | <!-- AI: fill --> | <!-- AI: from 03-TECH-STACK.md --> | <!-- AI: fill --> |
+| <!-- AI: e.g. Database --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |
+| <!-- AI: e.g. Frontend --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+## Request lifecycle
+<!-- AI: Trace a typical request from client → API → DB → response. Include auth check, input validation, and error handling steps. -->
+1. Client sends request to `<!-- AI: fill -->`
+2. <!-- AI: auth check happens here -->
+3. <!-- AI: input validated at route boundary -->
+4. <!-- AI: business logic / service layer -->
+5. <!-- AI: DB read/write -->
+6. <!-- AI: response returned -->
+
+## Data ownership
+<!-- AI: Each component owns its data. No component writes directly to another's store. -->
+| Component | Owns | Must not read/write |
+|-----------|------|---------------------|
+| <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+## External integrations
+| Service | Purpose | Auth method | On failure |
+|---------|---------|-------------|------------|
+| <!-- AI: fill or write None --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fail gracefully, log error --> |
+
+## Security boundaries
+- Authentication enforced at: <!-- AI: fill, e.g. API gateway / middleware -->
+- Input validated at: <!-- AI: fill, e.g. route boundary before service layer -->
+- Never sent to client: <!-- AI: fill, e.g. password hashes, internal IDs, stack traces -->
+
+## Known risks
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+| <!-- AI: fill --> | <!-- AI: low/med/high --> | <!-- AI: fill --> | <!-- AI: fill --> |

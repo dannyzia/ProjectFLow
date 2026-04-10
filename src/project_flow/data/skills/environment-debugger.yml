@@ -1,0 +1,18 @@
+name: environment-debugger
+description: Diagnose "works on my machine" issues across environments
+triggers:
+  - "works locally but not on"
+  - "environment issue"
+  - "different behavior on"
+  - "Docker vs local"
+  - "path problems"
+content: |
+  When environment mismatch occurs:
+
+  1. Check: env vars, file permissions, line endings, OS differences
+  2. Compare: dependency versions (package-lock, Gemfile.lock, go.sum)
+  3. Verify: working directory, PATH, temp space, port availability
+  4. Suggest: Docker parity, env diff script, debug print strategy
+  5. Output checklist: most likely culprits ordered by frequency
+
+  **Why:** "Works on my machine" is the #1 time-waster – systematic environment debugging cuts resolution time by 10x.

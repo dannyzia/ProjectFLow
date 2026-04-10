@@ -1,0 +1,67 @@
+<!--
+AI: This is the source of truth for every screen's layout and interactive states. Implement exactly as specified.
+Read first: 01-PRD.md (which screens exist), 09-UX-SPEC.md (global UX rules), 07-USER-FLOWS.md (how screens connect)
+You must: Implement every state listed (loading, empty, error, success). Apply responsive rules at every breakpoint.
+You must not: Render a screen that has no empty state or error state defined. Use color alone to convey meaning.
+Human reviews this: YES — agree on UI spec before building components.
+-->
+
+# UI Spec
+**Project:** {{ project_name }}
+
+---
+
+## Screen: <!-- AI: Screen name, e.g. Dashboard -->
+Route: `<!-- AI: /path -->` | Auth required: <!-- AI: yes/no -->
+
+### Layout
+<!-- AI: ASCII layout. Agents parse text, not images. Be precise about regions. -->
+```
+[Header — full width]
+  Logo (left) | Nav links (center) | User avatar + menu (right)
+
+[Main content — max-width <!-- AI: e.g. 1200px -->, centered, padding <!-- AI: e.g. 24px -->]
+  [Page title]: "<!-- AI: exact heading text -->"
+
+  [<!-- AI: section name -->]
+    <!-- AI: describe layout — grid, list, cards, form, etc. -->
+
+[Footer — full width]
+  <!-- AI: fill or write "None" -->
+```
+
+### Components
+
+#### <!-- AI: Component name, e.g. Primary action button -->
+| Property | Value |
+|----------|-------|
+| Label | `<!-- AI: exact text -->` |
+| On click | <!-- AI: exact behavior — navigate to, call API, open modal --> |
+| Disabled when | <!-- AI: condition, or "Never" --> |
+| Variant | <!-- AI: primary / secondary / danger --> |
+
+<!-- AI: Copy the component block for every interactive element on this screen. -->
+
+### States
+| State | Trigger | Behavior |
+|-------|---------|----------|
+| Loading | First data fetch | Show skeleton placeholder, disable all actions |
+| Empty | Fetch returns zero records | Show: "<!-- AI: empty state heading -->" + <!-- AI: CTA if applicable, or "No CTA" --> |
+| Error | Fetch fails | Show inline error with retry button. Message: "<!-- AI: exact text -->" |
+| Success | Data loaded | Render content as specified in layout |
+
+### Responsive behavior
+| Breakpoint | Behavior |
+|------------|----------|
+| > 1024px (Desktop) | <!-- AI: fill — e.g. 3-column grid --> |
+| 768–1024px (Tablet) | <!-- AI: fill — e.g. 2-column grid --> |
+| < 768px (Mobile) | <!-- AI: fill — e.g. single column, stacked --> |
+
+### Accessibility
+- All interactive elements keyboard-navigable (Tab, Enter, Space, Escape).
+- Every icon-only button has an `aria-label`.
+- Color contrast ratio ≥ 4.5:1 for normal text, ≥ 3:1 for large text.
+- Do not use color alone to convey state — always pair with text or icon.
+
+---
+<!-- AI: Copy the screen block above for each screen defined in 01-PRD.md. -->

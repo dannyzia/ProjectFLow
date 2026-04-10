@@ -1,0 +1,37 @@
+<!--
+AI: This is the complete list of all environment variables. Never hardcode any of these values.
+Read first: 03-TECH-STACK.md (for which services this project uses)
+You must: Read every required variable from the environment at startup. Generate .env.example from this table.
+You must not: Commit real values to source control. Use default values for required variables in production.
+Human reviews this: NO — but every variable must be accounted for here before deployment.
+-->
+
+# Environment Variables
+**Project:** {{ project_name }}
+
+## Rules
+- Never commit real secrets to source control. Use `.env` locally (git-ignored). Use secrets manager in production.
+- Generate `.env.example` from this table with all values blanked or set to their default.
+- Validate required variables at application startup. Fail fast if any are missing.
+- Client-exposed variables: prefix with `<!-- AI: e.g. NEXT_PUBLIC_ or VITE_ -->` and list separately below.
+
+## Server-side variables
+| Variable | Required | Default | Description | How to get it |
+|----------|----------|---------|-------------|---------------|
+| DATABASE_URL | yes | — | Full database connection string | Local: docker output. Prod: managed DB dashboard. |
+| JWT_SECRET | yes | — | Secret for signing auth tokens. Min 32 chars. | `openssl rand -hex 32` |
+| LOG_LEVEL | no | info | Verbosity: `debug` \| `info` \| `warn` \| `error` | — |
+| <!-- AI: VARIABLE_NAME --> | <!-- AI: yes/no --> | <!-- AI: value or — --> | <!-- AI: description --> | <!-- AI: where to get it --> |
+
+## Client-exposed variables
+<!-- AI: Only list variables that are intentionally exposed to the browser. Remove section if none exist. -->
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| <!-- AI: e.g. NEXT_PUBLIC_API_URL --> | yes | — | <!-- AI: fill --> |
+
+## Per-environment overrides
+<!-- AI: List variables that differ between environments. -->
+| Variable | Local | Staging | Production |
+|----------|-------|---------|------------|
+| LOG_LEVEL | debug | info | warn |
+| <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |

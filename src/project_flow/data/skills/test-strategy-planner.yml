@@ -1,0 +1,18 @@
+name: test-strategy-planner
+description: Determine what to test, how much, and which test types to use
+triggers:
+  - "how should I test"
+  - "test strategy for"
+  - "what tests do I need"
+  - "testing approach"
+  - "test coverage plan"
+content: |
+  When asked about testing:
+
+  1. Identify risk areas (payment, auth, data integrity, concurrency)
+  2. Recommend mix: unit (70%), integration (20%), e2e (10%)
+  3. Specify coverage targets: happy path + edge cases + error handling
+  4. Flag untestable parts for refactoring
+  5. Output a test matrix: Component → Test Type → Example → Priority (1-3)
+
+  **Why:** Most teams either over-test or under-test – this skill gives a risk-based, balanced strategy.

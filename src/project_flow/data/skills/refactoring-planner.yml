@@ -1,0 +1,17 @@
+name: refactoring-planner
+description: Plan safe, incremental refactoring with verification steps
+triggers:
+  - "refactor"
+  - "clean up this code"
+  - "improve structure"
+  - "rewrite"
+  - "how do I restructure"
+content: |
+  When planning refactors:
+
+  1. Break into small steps (guideline: ≤50 lines or ≤5 file changes per step)
+  2. Exception: renames, formatting, or mechanical changes – can batch safely
+  3. Each step must be verifiable (test pass, no error)
+  4. Always have rollback (git revert or comment out)
+
+  **Why:** Big refactors break things; small, planned ones don't – this skill makes refactoring boring and safe.

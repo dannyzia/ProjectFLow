@@ -1,0 +1,19 @@
+name: project-scaffolder
+description: Create initial project structure with best practices
+triggers:
+  - "create a new project"
+  - "start a project"
+  - "scaffold"
+  - "initialize repo"
+  - "new project setup"
+content: |
+  When starting a new project:
+
+  1. Ask for: project type, language, package manager, testing framework
+  2. Generate standard folder structure (src/, tests/, docs/, scripts/)
+  3. Create essential config files (.gitignore, README, editorconfig)
+  4. Set up basic CI template (GitHub Actions or equivalent)
+  5. Initialize git repository with initial commit
+  6. Add decision log directory
+
+  **Why:** Every project needs the same boilerplate – automate it to avoid missing critical files.

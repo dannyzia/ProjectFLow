@@ -1,0 +1,48 @@
+<!--
+AI: This is the source of truth for where files live. Always create new files in the locations defined here.
+Read first: 03-TECH-STACK.md (for framework conventions), 13-CONVENTIONS.md (for naming rules)
+You must: Place every new file in the correct directory as defined here. Update this doc when you add a new directory.
+You must not: Create files at the project root unless listed here. Create new top-level directories without updating this doc.
+Human reviews this: NO — AI determines structure based on tech stack, human verifies output.
+-->
+
+# Folder Structure
+**Project:** {{ project_name }}
+
+## Directory tree
+<!-- AI: Fill this tree based on the tech stack in 03-TECH-STACK.md. Be specific about what goes in each directory. -->
+```
+/
+├── src/                        # All application source code
+│   ├── <!-- AI: e.g. app/ -->  # <!-- AI: e.g. Next.js app router pages -->
+│   ├── <!-- AI: e.g. components/ --> # <!-- AI: e.g. Reusable UI components -->
+│   ├── <!-- AI: e.g. lib/ -->  # <!-- AI: e.g. Shared utilities and helpers -->
+│   ├── <!-- AI: e.g. services/ --> # <!-- AI: e.g. Business logic, never called directly from UI -->
+│   └── <!-- AI: e.g. types/ --> # <!-- AI: e.g. Shared TypeScript types and interfaces -->
+├── tests/
+│   ├── unit/                   # Unit tests — mirrors src/ structure
+│   └── e2e/                    # End-to-end tests
+├── docs/
+│   └── Plan/                   # Project planning documents (this directory)
+├── scripts/                    # One-off scripts: migrations, seed data, CI helpers
+├── <!-- AI: e.g. public/ -->   # <!-- AI: e.g. Static assets served directly -->
+└── <!-- AI: add others from your tech stack -->
+```
+
+## Placement rules
+<!-- AI: For each common file type, state exactly where it goes. These are hard rules. -->
+| File type | Goes in | Example |
+|-----------|---------|--------|
+| UI components | `<!-- AI: e.g. src/components/ -->` | `<!-- AI: e.g. src/components/Button.tsx -->` |
+| API route handlers | `<!-- AI: e.g. src/app/api/ -->` | `<!-- AI: e.g. src/app/api/users/route.ts -->` |
+| Business logic | `<!-- AI: e.g. src/services/ -->` | `<!-- AI: e.g. src/services/userService.ts -->` |
+| Database queries | `<!-- AI: e.g. src/lib/db/ -->` | `<!-- AI: e.g. src/lib/db/users.ts -->` |
+| Types / interfaces | `<!-- AI: e.g. src/types/ -->` | `<!-- AI: e.g. src/types/user.ts -->` |
+| Unit tests | Mirror `src/` in `tests/unit/` | `<!-- AI: e.g. tests/unit/services/userService.test.ts -->` |
+| E2E tests | `tests/e2e/` | `<!-- AI: e.g. tests/e2e/login.spec.ts -->` |
+
+## What must never happen
+- Business logic in route handlers or components — put it in the service layer.
+- Database calls outside of the DB layer.
+- Shared types defined inside a single component or route file.
+- Test files mixed into `src/` directories.

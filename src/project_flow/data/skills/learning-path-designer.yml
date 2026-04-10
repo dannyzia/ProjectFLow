@@ -1,0 +1,17 @@
+name: learning-path-designer
+description: Create personalized learning roadmap for a new tech stack
+triggers:
+  - "how to learn"
+  - "study plan for"
+  - "get up to speed with"
+  - "learning path"
+  - "starting with"
+content: |
+  When creating a learning path:
+
+  1. Break into 30-min modules (20% concept, 30% example, 50% exercise)
+  2. Add review checkpoints: 1 day, 3 days, 7 days after each module
+  3. Suggest tools: Anki cards, handwritten notes, or coding challenges
+  4. Track mastery with mini-projects that combine previous modules
+
+  **Why:** Learning the wrong thing in the wrong order wastes time – structured paths prevent that.

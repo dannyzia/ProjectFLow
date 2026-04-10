@@ -1,0 +1,47 @@
+<!--
+AI: This is the source of truth for what to build. Read it before writing any code.
+Read first: 03-TECH-STACK.md, 19-GLOSSARY.md
+You must: Implement every functional requirement. Treat every acceptance criterion as a pass/fail test.
+You must not: Build anything not listed here. Assume scope. Modify acceptance criteria without human approval.
+Human reviews this: YES — do not begin implementation until a human has filled in this document.
+-->
+
+# Product Requirements: {{ project_name }}
+
+> **{{ project_description }}**
+
+## Problem statement
+<!-- AI: What specific problem does this solve? Who has it? What breaks without this product? Fill this in. -->
+
+## Users
+| User type | Description | Primary goal |
+|-----------|-------------|-------------|
+| <!-- AI: e.g. Admin --> | <!-- AI: who they are --> | <!-- AI: what they need to do --> |
+
+## Functional requirements
+
+### Must-have (MVP)
+<!-- AI: Numbered, testable requirements. Each must be verifiable. Do not combine multiple requirements into one line. -->
+1. <!-- AI: fill -->
+
+### Should-have (post-MVP)
+1. <!-- AI: fill -->
+
+### Explicitly out of scope
+<!-- AI: List what this product does NOT do. Prevents scope creep. Required section. -->
+1. <!-- AI: fill -->
+
+## Non-functional requirements
+| Category    | Requirement                                    | How to verify           |
+|-------------|------------------------------------------------|-------------------------|
+| Performance | <!-- AI: e.g. API P95 latency < 300ms -->      | Load test               |
+| Security    | <!-- AI: e.g. OWASP Top 10 mitigated -->       | Security scan           |
+| Reliability | <!-- AI: e.g. 99.9% uptime -->                 | Uptime monitoring       |
+| Scalability | <!-- AI: e.g. support 10,000 concurrent users -->| Stress test           |
+
+## Acceptance criteria
+<!-- AI: Each criterion is binary — it either passes or fails. No ambiguous language. Reference these when writing tests. -->
+| ID   | Criterion                        | Verified by              |
+|------|----------------------------------|--------------------------|
+| AC-1 | <!-- AI: fill -->                | <!-- AI: unit/e2e/manual -->|
+| AC-2 | <!-- AI: fill -->                | <!-- AI: fill -->        |

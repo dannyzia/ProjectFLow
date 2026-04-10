@@ -1,0 +1,49 @@
+<!--
+AI: This is the canonical list of every tool used in this project. Do not introduce new dependencies not listed here.
+Read first: 04-ADR.md (for decisions that explain why these tools were chosen)
+You must: Use exactly these tools and versions. Install via the listed package manager only.
+You must not: Add libraries, frameworks, or services not listed here without creating an ADR.
+Human reviews this: YES — confirm before starting implementation.
+-->
+---
+project_name: {{ project_name }}
+project_description: {{ project_description }}
+primary_language: UNKNOWN
+framework: UNKNOWN
+database: UNKNOWN
+package_manager: UNKNOWN
+test_framework: UNKNOWN
+linting: UNKNOWN
+formatting: UNKNOWN
+typing: UNKNOWN
+---
+
+# Tech Stack: {{ project_name }}
+
+## Approved dependencies
+<!-- AI: Fill this table from the project's package file. Every production dependency must be listed. -->
+| Package | Version | Purpose | Alternatives rejected |
+|---------|---------|---------|----------------------|
+| <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill or N/A --> |
+
+## Global coding rules
+<!-- AI: These rules apply to every file in this project without exception. -->
+- Language: <!-- AI: fill from frontmatter -->
+- Formatter: <!-- AI: fill from frontmatter --> — run before every commit
+- Linter: <!-- AI: fill from frontmatter --> — zero warnings allowed
+- Types: <!-- AI: fill from frontmatter --> — no implicit `any` or untyped exports
+- Tests required: yes — all business logic must have unit tests
+
+## Environment targets
+| Environment | Purpose | Branch | Notes |
+|-------------|---------|--------|-------|
+| local | Development | any | Uses `.env` |
+| staging | Pre-release verification | develop | Mirrors prod config |
+| production | Live users | main | Manual deploy only |
+
+## What is off-limits
+<!-- AI: Technologies and patterns explicitly banned from this project. -->
+- No raw SQL queries outside of the database layer
+- No `console.log` / `print` in committed code — use the project logger
+- No secrets committed to source control
+- <!-- AI: add project-specific prohibitions -->

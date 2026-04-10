@@ -1,0 +1,455 @@
+version: "1.0"
+
+# Set to false to disable bundled generic skills (enabled by default)
+generic_skills: true
+
+# Optional: override project identity. If omitted, project-flow derives these from the repo
+# and AI detection during scaffold/analyze.
+# project:
+#   name: "my-app"
+#   description: "A brief description of what this project does"
+#   tech_stack_file: "docs/Plan/03-TECH-STACK.md"
+#   output_root: "."
+
+ides:
+  vscode: true
+  kilo: false
+  cursor: false
+  windsurf: false
+  zed: false
+  void: false
+  cline: false
+  claude: false
+  antigravity: false
+
+agent_params:
+  _global:
+    ORCHESTRATOR_NAME: "Orchestrator"
+    DOCUMENTATION_LANGUAGE: "English"
+  orchestrator:
+    MAX_WAVES: "6–8"
+    WORKFLOW_LOOP: "Code → Skeptic → (fix if needed) → Test → (fix if needed) → Done"
+  frontend-specialist:
+    CSS_APPROACH: "utility-first or CSS modules"
+  debug:
+    MIN_CAUSES: "5"
+    MAX_CAUSES: "7"
+    MIN_CANDIDATES: "1"
+    MAX_CANDIDATES: "2"
+  architect:
+    EFFORT_LEVELS: "low/medium/high"
+    PLAN_SUMMARY_LENGTH: "2-3"
+  docs-specialist:
+    BANNED_PHRASES: '"simply", "just", "easy", "obviously"'
+  code-simplifier:
+    SUMMARY_SENTENCES: "2–3"
+    LIST_ITEM_SENTENCES: "1–2"
+
+prompts:
+  - filename: "new-feature.prompt.md"
+    content: "Read the PRD and architecture docs, then implement the described feature following all coding rules."
+  - filename: "code-review.prompt.md"
+    content: "Review the selected code for bugs, security issues, and style violations. List findings with severity."
+  - filename: "write-tests.prompt.md"
+    content: "Write comprehensive tests for the selected module. Cover happy path, edge cases, and error paths."
+  - filename: "fix-bug.prompt.md"
+    content: "Diagnose the described bug. Identify the root cause before writing any fix. Show before/after."
+  - filename: "refactor.prompt.md"
+    content: "Refactor the selected code to reduce complexity. Do not change any public API or external behavior."
+
+skills:
+  - name: "testing"
+    description: "Testing practices and conventions"
+    content: |
+      # Testing Skill
+
+      You are a testing specialist for {{ PROJECT_NAME }}.
+
+      ## Test Framework
+      {{ TEST_FRAMEWORK }}
+
+      ## Rules
+      - Write deterministic tests. No random data without a fixed seed.
+      - Cover happy path, edge cases, and error paths.
+      - Every assertion must have a message explaining what it checks.
+      - Do not write tests that depend on execution order.
+      - Show the full test run output — not just "tests passed".
+  - name: "documentation"
+    description: "Technical writing standards"
+    content: |
+      # Documentation Skill
+
+      You are a technical writing expert for {{ PROJECT_NAME }}.
+
+      ## Rules
+      - Write for a reader seeing this for the first time.
+      - Explain why, not just what.
+      - Every code example must be runnable and correct.
+      - Use consistent terminology throughout — no synonyms for technical terms.
+      - Start with the most important information.
+      - Avoid: "simply", "just", "easy", "obviously".
+  - name: "code-review"
+    description: "Comprehensive PR code review using specialized agents"
+    source_url: "https://github.com/NeoLabHQ/code-review"
+    content: |
+      # Code Review Skill
+
+      Source: [NeoLabHQ/code-review](https://github.com/NeoLabHQ/code-review)
+
+      Perform comprehensive PR code reviews covering: bugs, security, quality, performance, and maintainability.
+  - name: "systematic-debugging"
+    description: "Step-by-step root-cause investigation before any fixes"
+    source_url: "https://github.com/obra/systematic-debugging"
+    content: |
+      # Systematic Debugging Skill
+
+      Source: [obra/systematic-debugging](https://github.com/obra/systematic-debugging)
+
+      Forces step-by-step root-cause investigation before any fixes. Never guess and fix simultaneously.
+  - name: "root-cause-tracing"
+    description: "Traces data flow and hypotheses to pinpoint the real bug source"
+    source_url: "https://github.com/obra/root-cause-tracing"
+    content: |
+      # Root Cause Tracing Skill
+
+      Source: [obra/root-cause-tracing](https://github.com/obra/root-cause-tracing)
+
+      Traces data flow and hypotheses to pinpoint the real bug source.
+  - name: "test-driven-development"
+    description: "Classic TDD: writes tests first, then implements code"
+    source_url: "https://github.com/obra/test-driven-development"
+    content: |
+      # Test Driven Development Skill
+
+      Source: [obra/test-driven-development](https://github.com/obra/test-driven-development)
+
+      Classic TDD: writes tests first, then implements code. Red → Green → Refactor.
+  - name: "reflexion"
+    description: "Makes the AI reflect on its own output and self-correct in a loop"
+    source_url: "https://github.com/NeoLabHQ/reflexion"
+    content: |
+      # Reflexion Skill
+
+      Source: [NeoLabHQ/reflexion](https://github.com/NeoLabHQ/reflexion)
+
+      Makes the AI reflect on its own output and self-correct in a loop until quality threshold is met.
+  - name: "spec-driven-development"
+    description: "Turns vague prompts into structured plans → architecture → code with quality gates"
+    source_url: "https://github.com/NeoLabHQ/sdd"
+    content: |
+      # Spec Driven Development Skill
+
+      Source: [NeoLabHQ/sdd](https://github.com/NeoLabHQ/sdd)
+
+      Turns vague prompts into structured plans → architecture → code with quality gates.
+  - name: "qa"
+    description: "Acts as QA lead: tests the app, finds bugs, writes regression tests"
+    source_url: "https://github.com/garrytan/qa"
+    content: |
+      # QA Skill
+
+      Source: [garrytan/qa](https://github.com/garrytan/qa)
+
+      Acts as QA lead: tests the app, finds bugs, writes regression tests.
+  - name: "create-pr"
+    description: "Handles GitHub PR creation with best practices"
+    source_url: "https://github.com/getsentry/create-pr"
+    content: |
+      # Create PR Skill
+
+      Source: [getsentry/create-pr](https://github.com/getsentry/create-pr)
+
+      Handles GitHub PR creation with best practices.
+  - name: "iterate-pr"
+    description: "Iterates on PR feedback and addresses comments"
+    source_url: "https://github.com/getsentry/iterate-pr"
+    content: |
+      # Iterate PR Skill
+
+      Source: [getsentry/iterate-pr](https://github.com/getsentry/iterate-pr)
+
+      Iterates on PR feedback and addresses comments.
+  - name: "ship"
+    description: "Full release workflow: sync, test, audit, push, open PR"
+    source_url: "https://github.com/garrytan/ship"
+    content: |
+      # Ship Skill
+
+      Source: [garrytan/ship](https://github.com/garrytan/ship)
+
+      Full release workflow: sync, test, audit, push, open PR.
+  - name: "differential-review"
+    description: "Security-focused diff review using git history"
+    source_url: "https://github.com/trailofbits/differential-review"
+    content: |
+      # Differential Review Skill
+
+      Source: [trailofbits/differential-review](https://github.com/trailofbits/differential-review)
+
+      Security-focused diff review using git history.
+
+agents:
+  orchestrator:
+    display_name: "Orchestrator"
+    description: "Strategic workflow orchestrator that coordinates complex tasks by delegating to specialized agents."
+    prompt_file: "config/agents/orchestrator.md"
+    readonly: false
+    tools:
+      - "agent"
+      - "search"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    allowed_agents:
+      - "architect"
+      - "code"
+      - "ask"
+      - "debug"
+      - "code-reviewer"
+      - "code-skeptic"
+      - "frontend-specialist"
+      - "test-engineer"
+      - "docs-specialist"
+      - "code-simplifier"
+    model: "kimi-k2.5"
+    handoffs:
+      - label: "Start Planning"
+        agent_slug: "architect"
+        prompt: "Create a detailed plan and todo list for the current task."
+      - label: "Begin Implementation"
+        agent_slug: "code"
+        prompt: "Implement the approved plan following all project rules."
+      - label: "Review Code"
+        agent_slug: "code-reviewer"
+        prompt: "Perform a full code review of the recent changes."
+      - label: "Critical Verification"
+        agent_slug: "code-skeptic"
+        prompt: "Verify the latest work thoroughly with proof and logs."
+    kilo:
+      color: "red"
+      mode: "primary"
+
+  architect:
+    display_name: "Architect"
+    description: "Technical leader that gathers context and creates detailed plans and todo lists."
+    prompt_file: "config/agents/architect.md"
+    readonly: true
+    tools:
+      - "search"
+      - "web"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "kimi-k2.5"
+    handoffs:
+      - label: "Start Implementation"
+        agent_slug: "code"
+        prompt: "Implement the plan below following all project rules and best practices."
+      - label: "Ask for Clarification"
+        agent_slug: "ask"
+        prompt: "Answer the clarifying questions below before we proceed."
+      - label: "Hand off to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review this plan and coordinate the full workflow."
+    kilo:
+      color: "purple"
+
+  code:
+    display_name: "Code"
+    description: "Highly skilled software engineer for writing, modifying, and refactoring code."
+    prompt_file: "config/agents/code.md"
+    readonly: false
+    tools:
+      - "agent"
+      - "search"
+      - "web"
+      - "edit"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "glm-4.7"
+    handoffs:
+      - label: "Review Changes"
+        agent_slug: "code-reviewer"
+        prompt: "Review the code I just wrote or modified."
+      - label: "Critical Verification"
+        agent_slug: "code-skeptic"
+        prompt: "Verify this implementation thoroughly with logs and tests."
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review progress and decide next steps."
+    kilo:
+      color: "blue"
+
+  ask:
+    display_name: "Ask"
+    description: "Knowledgeable technical assistant for explanations and analysis."
+    prompt_file: "config/agents/ask.md"
+    readonly: true
+    tools:
+      - "search"
+      - "web"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "grok-code-fast-1"
+    handoffs:
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Continue coordinating the task with this information."
+    kilo:
+      color: "gray"
+
+  debug:
+    display_name: "Debug"
+    description: "Expert in systematic debugging and root cause diagnosis."
+    prompt_file: "config/agents/debug.md"
+    readonly: false
+    tools:
+      - "search"
+      - "edit"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "deepseek-reasoner"
+    handoffs:
+      - label: "Implement Fix"
+        agent_slug: "code"
+        prompt: "Apply the fix I diagnosed."
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review the debug findings."
+    kilo:
+      color: "gray"
+
+  code-reviewer:
+    display_name: "Code Reviewer"
+    description: "Senior engineer performing thorough code reviews."
+    prompt_file: "config/agents/code-reviewer.md"
+    readonly: true
+    tools:
+      - "search"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "deepseek-reasoner"
+    handoffs:
+      - label: "Critical Check"
+        agent_slug: "code-skeptic"
+        prompt: "Verify this review with proof and logs."
+      - label: "Back to Code"
+        agent_slug: "code"
+        prompt: "Address the review feedback."
+    kilo:
+      color: "green"
+
+  code-skeptic:
+    display_name: "Code Skeptic"
+    description: "Skeptical and critical code quality inspector."
+    prompt_file: "config/agents/code-skeptic.md"
+    readonly: true
+    tools:
+      - "search"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "deepseek-reasoner"
+    handoffs:
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review the verification results."
+    kilo:
+      color: "orange"
+
+  frontend-specialist:
+    display_name: "Frontend Specialist"
+    description: "UI/UX expert specializing in frontend components, styles, and accessibility."
+    prompt_file: "config/agents/frontend-specialist.md"
+    readonly: false
+    tools:
+      - "agent"
+      - "search"
+      - "web"
+      - "edit"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "gpt-5.3-codex"
+    handoffs:
+      - label: "Review Changes"
+        agent_slug: "code-reviewer"
+        prompt: "Review the frontend changes for accessibility, performance, and correctness."
+      - label: "Critical Verification"
+        agent_slug: "code-skeptic"
+        prompt: "Verify the frontend implementation thoroughly with logs and tests."
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review frontend progress and decide next steps."
+    kilo:
+      color: "gray"
+
+  test-engineer:
+    display_name: "Test Engineer"
+    description: "QA engineer and testing specialist for unit, integration, and E2E tests."
+    prompt_file: "config/agents/test-engineer.md"
+    readonly: false
+    tools:
+      - "search"
+      - "edit"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "glm-4.7"
+    handoffs:
+      - label: "Fix Implementation Bug"
+        agent_slug: "code"
+        prompt: "Fix the implementation bug revealed by failing tests."
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review test results and decide next steps."
+    kilo:
+      color: "gray"
+
+  docs-specialist:
+    display_name: "Docs Specialist"
+    description: "Technical writing expert for documentation, READMEs, and inline comments."
+    prompt_file: "config/agents/docs-specialist.md"
+    readonly: false
+    tools:
+      - "search"
+      - "edit"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "gpt-5-mini"
+    handoffs:
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review the documentation and decide next steps."
+    kilo:
+      color: "gray"
+
+  code-simplifier:
+    display_name: "Code Simplifier"
+    description: "Expert refactoring specialist that improves code clarity without changing behavior."
+    prompt_file: "config/agents/code-simplifier.md"
+    readonly: false
+    tools:
+      - "search"
+      - "edit"
+      - "search/codebase"
+      - "search/usages"
+      - "read/terminalLastCommand"
+    model: "glm-4.7"
+    handoffs:
+      - label: "Review Changes"
+        agent_slug: "code-reviewer"
+        prompt: "Review the refactoring changes for correctness."
+      - label: "Critical Verification"
+        agent_slug: "code-skeptic"
+        prompt: "Verify that refactoring preserved all behavior with proof and logs."
+      - label: "Back to Orchestrator"
+        agent_slug: "orchestrator"
+        prompt: "Review the refactoring results and decide next steps."
+    kilo:
+      color: "gray"

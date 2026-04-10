@@ -1,0 +1,33 @@
+{
+  "config_files": {
+    "javascript": ["package.json", "tsconfig.json", ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yml", "eslint.config.js", "eslint.config.ts", "eslint.config.mjs", "jest.config.js", "jest.config.ts", "vitest.config.ts", "vitest.config.js", "vite.config.ts", "vite.config.js", "webpack.config.js", "webpack.config.ts", "next.config.js", "next.config.ts", "next.config.mjs", "nuxt.config.ts", "angular.json", ".babelrc", "babel.config.js"],
+    "python": ["pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "requirements-dev.txt", "requirements-test.txt", "Pipfile", "uv.lock", "poetry.lock", ".python-version", "tox.ini", "mypy.ini", ".mypy.ini", "ruff.toml", ".flake8"],
+    "rust": ["Cargo.toml", "Cargo.lock", "rust-toolchain.toml"],
+    "go": ["go.mod", "go.sum"],
+    "dart": ["pubspec.yaml", "pubspec.lock", "analysis_options.yaml"],
+    "ruby": ["Gemfile", "Gemfile.lock", ".ruby-version", ".rubocop.yml"],
+    "java": ["pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"],
+    "csharp": ["Directory.Build.props", "global.json"],
+    "php": ["composer.json", "composer.lock", "phpunit.xml", "phpstan.neon"],
+    "swift": ["Package.swift", "Package.resolved"],
+    "kotlin": ["build.gradle.kts", "settings.gradle.kts"],
+    "elixir": ["mix.exs", "mix.lock"],
+    "scala": ["build.sbt", "project/build.properties"]
+  },
+  "infra_files": [
+    "docker-compose.yml", "docker-compose.yaml", "docker-compose.*.yml", "Dockerfile",
+    ".github/workflows/*.yml", ".github/workflows/*.yaml",
+    "Makefile", "justfile", "Taskfile.yml", "Taskfile.yaml"
+  ],
+  "always_fetch": [
+    "README.md", "LICENSE"
+  ],
+  "max_file_size_bytes": 1048576,
+  "max_files_to_fetch": 20,
+  "github_api": {
+    "base_url": "https://api.github.com",
+    "tree_endpoint": "/repos/{owner}/{repo}/git/trees/{branch}?recursive=1",
+    "content_endpoint": "/repos/{owner}/{repo}/contents/{path}",
+    "default_branch": "main"
+  }
+}

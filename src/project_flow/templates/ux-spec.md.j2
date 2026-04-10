@@ -1,0 +1,74 @@
+<!--
+AI: These are global UX rules that apply to every screen and interaction in the project. No exceptions.
+Read first: 08-UI-SPEC.md (for screen-specific behavior), 07-USER-FLOWS.md (for flow-specific behavior)
+You must: Apply every rule here to every component you build. These are not suggestions.
+You must not: Show a destructive action without a confirmation dialog. Lose user input on error. Skip loading states.
+Human reviews this: YES — UX rules must be agreed before building UI.
+-->
+
+# UX Spec
+**Project:** {{ project_name }}
+
+## Non-negotiable rules
+- Never lose user input on error. Always preserve form state when an operation fails.
+- Every async action must show a loading state. The UI must not appear frozen.
+- Destructive actions always require a confirmation dialog before executing.
+- No placeholder copy (`…`, `TODO`, `[to be defined]`) in any committed UI.
+
+## Loading states
+| Pattern | When to use | Implementation |
+|---------|-------------|----------------|
+| Skeleton | Initial page or section load | Pulse animation on placeholder blocks matching content shape |
+| Spinner | Button action (submit, save, delete) | Replace button label with spinner, disable button |
+| Progress bar | File upload or long multi-step operation | Show percent complete. Update every second minimum. |
+
+## Feedback & notifications
+| Event | Mechanism | Duration | Dismissable | Position |
+|-------|-----------|----------|-------------|----------|
+| Success | Toast — green | 4s auto-dismiss | yes | Bottom right |
+| Validation error | Inline, below the field | Until corrected | no | Adjacent to field |
+| Server error | Toast — red | Persistent | yes | Bottom right |
+| Confirmation required | Modal dialog | Until user acts | no | Center |
+
+## Confirmation dialogs
+<!-- AI: Use this exact dialog structure for all destructive actions. -->
+Required before: deleting records, bulk actions, any irreversible operation.
+```
+Title: "[Verb] [item name]?"  — e.g. "Delete invoice 0042?"
+Body: "This cannot be undone."
+Actions:
+  [Cancel] (left, neutral)
+  [Confirm action] (right, danger-styled)
+```
+
+## Forms
+- Validate on blur (not on every keystroke, not only on submit).
+- After first failed submit: show all validation errors at once.
+- Autofocus the first field when a modal opens.
+- Disable the submit button while a request is in flight.
+- On create success: reset the form.
+- On edit success: retain the updated values.
+- Tab order must follow visual layout order.
+
+## Navigation
+- Active route is always visually highlighted in the nav.
+- Browser back button works for all navigations (no history.replace on success).
+- Deep links must work without requiring click-through navigation.
+- After login, redirect to the originally requested URL (not always dashboard).
+
+## Empty states
+<!-- AI: Every list, table, feed, and search result must have a defined empty state. -->
+Required structure: Heading + 1-line description + CTA (if the user can take action).
+```
+Example:
+  Heading: "No invoices yet"
+  Body: "Create your first invoice to get started."
+  CTA: [Create invoice →] (links to create flow)
+```
+
+## Breakpoints
+| Name | Width | Notes |
+|------|-------|-------|
+| Mobile | < 768px | Stack all columns. Touch-friendly tap targets (≥ 44px). |
+| Tablet | 768–1024px | Reduce column count. Collapsible nav. |
+| Desktop | > 1024px | Full layout as designed. |

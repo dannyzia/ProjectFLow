@@ -1,0 +1,64 @@
+<!--
+AI: These conventions apply to every file in this project without exception.
+Read first: 03-TECH-STACK.md (for language, formatter, linter)
+You must: Follow every naming rule here. Run formatter and linter before considering any change complete.
+You must not: Use naming patterns not listed here. Bypass linting. Leave warnings unresolved.
+Human reviews this: YES — team must agree on conventions before implementation starts.
+-->
+
+# Coding Conventions
+**Project:** {{ project_name }}
+
+## Tooling
+<!-- AI: Fill from 03-TECH-STACK.md frontmatter. -->
+| Tool | Value | Run command |
+|------|-------|-------------|
+| Language | <!-- AI: fill --> | — |
+| Formatter | <!-- AI: fill --> | <!-- AI: e.g. pnpm format --> |
+| Linter | <!-- AI: fill --> | <!-- AI: e.g. pnpm lint --> |
+| Type checker | <!-- AI: fill --> | <!-- AI: e.g. pnpm type-check --> |
+
+**Enforce on commit:** All three must pass before a commit is accepted.
+
+## Naming conventions
+<!-- AI: Fill in based on language and framework. These are the actual conventions for this project. -->
+| Thing | Convention | Example |
+|-------|------------|---------|
+| Source files | <!-- AI: e.g. kebab-case --> | <!-- AI: e.g. user-service.ts --> |
+| React/Vue components | <!-- AI: e.g. PascalCase --> | <!-- AI: e.g. UserCard.tsx --> |
+| Functions | <!-- AI: e.g. camelCase --> | <!-- AI: e.g. getUserById() --> |
+| Constants | <!-- AI: e.g. SCREAMING_SNAKE_CASE --> | <!-- AI: e.g. MAX_RETRY_COUNT --> |
+| Types / interfaces | <!-- AI: e.g. PascalCase --> | <!-- AI: e.g. UserProfile --> |
+| Database tables | <!-- AI: e.g. snake_case, plural --> | <!-- AI: e.g. user_sessions --> |
+| Database columns | <!-- AI: e.g. snake_case --> | <!-- AI: e.g. created_at --> |
+| Environment variables | SCREAMING_SNAKE_CASE | DATABASE_URL |
+| CSS classes | <!-- AI: e.g. kebab-case or Tailwind utilities --> | <!-- AI: e.g. card-header --> |
+
+## Language-specific rules
+<!-- AI: Add rules specific to this project's primary language and framework. Remove sections that don't apply. -->
+
+### General (all languages)
+- No commented-out code in committed files — delete it or open an issue.
+- No debug print/log statements in committed code — use the project logger.
+- Functions do one thing. If a function needs a comment to explain what it does, split it.
+
+### <!-- AI: e.g. TypeScript -->
+- <!-- AI: e.g. No implicit `any`. Every function parameter and return type must be typed. -->
+- <!-- AI: e.g. Use `interface` for object shapes, `type` for unions and aliases. -->
+
+### API / backend
+- Validate all input at the route boundary before it reaches the service layer.
+- Never return stack traces to the client. Log them server-side with context.
+- Every service function that can fail must return a typed error, not throw.
+
+### Database
+- All queries go through the DB layer (see 12-FOLDER-STRUCTURE.md).
+- No raw string interpolation in queries. Use parameterized queries only.
+
+## Git conventions
+| Thing | Convention | Example |
+|-------|------------|---------|
+| Commit messages | Conventional Commits | `feat: add invoice export`, `fix: resolve login loop` |
+| Branch names | `type/short-description` | `feat/invoice-export`, `fix/login-loop` |
+| PR titles | Same as commit format | `feat: add invoice export` |
+| Protected branches | `main`, `develop` | No force-push. No direct commits. PR required. |

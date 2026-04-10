@@ -1,0 +1,54 @@
+<!--
+AI: Use this document to configure alerts and understand what they mean.
+Read first: 15-RUNBOOK-DEPLOY.md (for deploy-related alerts), 16-INCIDENT-RESPONSE.md (for how to respond)
+You must: Configure alerts for every metric listed. Link each alert to its runbook action.
+You must not: Ignore an alert without documenting why. Change thresholds without updating this doc.
+Human reviews this: NO — AI configures and responds. Human reviews alert thresholds during setup.
+-->
+
+# Monitoring & Alerts
+**Project:** {{ project_name }}
+
+## Dashboards
+<!-- AI: Fill in links when infrastructure is provisioned. -->
+| Name | URL | What it shows |
+|------|-----|---------------|
+| App overview | <!-- AI: fill --> | Request rate, error rate, P95 latency |
+| DB performance | <!-- AI: fill --> | Query times, connection pool usage, lock waits |
+| <!-- AI: e.g. Background jobs --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+## Alert thresholds
+<!-- AI: Configure an alert for every row in this table. -->
+| Metric | Normal range | Alert threshold | Severity | Alert channel |
+|--------|-------------|-----------------|----------|---------------|
+| API error rate | < 0.5% | > 2% for 5 min | P2 | <!-- AI: e.g. #alerts-prod --> |
+| P95 response time | < 300ms | > 1,000ms for 5 min | P2 | <!-- AI: fill --> |
+| DB connection pool usage | < 70% | > 90% | P2 | <!-- AI: fill --> |
+| Failed login attempts | baseline | > 50/min | P2 | <!-- AI: fill --> |
+| Disk usage | < 70% | > 85% | P3 | <!-- AI: fill --> |
+| <!-- AI: add project-specific metric --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+## What each alert means and what to do
+
+### High API error rate
+- Check: recent deploy (roll back if yes), bad input causing 500s, downstream service failure.
+- First action: `<!-- AI: e.g. curl https://app.com/api/health -->`
+- Runbook: [15-RUNBOOK-DEPLOY.md](./15-RUNBOOK-DEPLOY.md) — Rollback procedure
+- Incident guide: [16-INCIDENT-RESPONSE.md](./16-INCIDENT-RESPONSE.md)
+
+### Slow response time
+- Check: slow DB queries (check slow query log), missing index, N+1 query, memory pressure.
+- First action: Check DB slow query log.
+- Runbook: <!-- AI: add link or steps -->
+
+### DB connection pool exhausted
+- Check: query taking too long, connection leak, spike in traffic.
+- First action: Identify longest-running query. Kill if safe.
+- Runbook: <!-- AI: add link or steps -->
+
+### Brute-force login attempts
+- Check: IP source, user accounts targeted.
+- First action: Rate-limit or block source IP at edge.
+- Runbook: <!-- AI: add link or steps -->
+
+<!-- AI: Add a section for every additional alert in the table above. -->

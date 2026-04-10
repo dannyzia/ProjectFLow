@@ -1,0 +1,19 @@
+name: doc-gap-analyzer
+description: Find what is missing from documentation based on actual usage
+triggers:
+  - "documentation is missing"
+  - "what's not documented"
+  - "review docs"
+  - "improve README"
+  - "docs are outdated"
+content: |
+  When reviewing documentation:
+
+  1. Compare docs against actual code interface
+  2. Identify: missing setup steps, undocumented parameters, unclear error messages
+  3. Check for outdated examples or configuration
+  4. Note assumptions not explicitly stated
+  5. Flag missing "why" explanations (documents what, not why)
+  6. Suggest priority order for fixes
+
+  **Why:** Good docs prevent hours of debugging – but you need to find the gaps first.

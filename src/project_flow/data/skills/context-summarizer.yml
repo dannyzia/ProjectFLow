@@ -1,0 +1,17 @@
+name: context-summarizer
+description: Compress large codebases or conversations into actionable summaries
+triggers:
+  - "summarize this codebase"
+  - "give me the big picture"
+  - "what does this project do"
+  - "explain the architecture"
+  - "overview of this code"
+content: |
+  When summarizing a large codebase:
+
+  1. Create Mermaid diagram with ≤7 nodes (force consolidation)
+  2. If >7 nodes, group into subsystems first
+  3. List only the 5 most critical files/functions
+  4. Add "if you need more detail, ask about [X]"
+
+  **Why:** You can't hold entire codebases in working memory – a crisp summary speeds up every subsequent task.

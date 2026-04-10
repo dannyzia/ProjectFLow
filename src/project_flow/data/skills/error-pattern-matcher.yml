@@ -1,0 +1,22 @@
+name: error-pattern-matcher
+description: Match error messages to known solutions without assuming stack
+triggers:
+  - "error:"
+  - "exception:"
+  - "failed to"
+  - "traceback"
+  - "does not work"
+content: |
+  When encountering an error:
+
+  1. Extract key signatures (error code, message pattern, stack trace snippets)
+  2. Search for similar patterns across language-agnostic categories:
+     - Configuration issues
+     - Permission problems
+     - Version mismatches
+     - Resource exhaustion
+     - Race conditions
+  3. Suggest 3 most likely solutions with probability estimate
+  4. Request additional diagnostic info if ambiguous
+
+  **Why:** Many errors have identical patterns across stacks – pattern matching works before knowing the language.

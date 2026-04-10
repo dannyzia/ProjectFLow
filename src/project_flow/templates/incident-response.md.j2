@@ -1,0 +1,52 @@
+<!--
+AI: Follow these steps exactly when something breaks in production. Do not attempt fixes before assessing severity.
+Read first: 17-MONITORING.md (to identify what broke), 15-RUNBOOK-DEPLOY.md (for rollback steps)
+You must: Assess severity first. Mitigate before root-cause analysis. Write an incident report within 24 hours.
+You must not: Attempt a fix before identifying the cause. Skip the incident report.
+Human reviews this: NO — AI follows the steps. Human authorizes rollbacks and external communication.
+-->
+
+# Incident Response
+**Project:** {{ project_name }}
+
+## Severity levels
+| Level | Definition | Response time | Escalate to |
+|-------|-----------|---------------|-------------|
+| P1 | Total outage, data loss, security breach | Immediate | <!-- AI: on-call lead --> |
+| P2 | Major feature broken for all users | < 30 min | <!-- AI: on-call lead --> |
+| P3 | Feature broken for some users | < 2 hours | <!-- AI: team channel --> |
+| P4 | Minor bug, workaround exists | Next business day | <!-- AI: issue tracker --> |
+
+## Response steps (for any incident)
+<!-- AI: Follow these in order. Do not skip steps. -->
+1. Acknowledge: Post "I'm investigating [symptom]" in <!-- AI: incident channel -->
+2. Assess severity using the table above.
+3. If P1 or P2: immediately notify <!-- AI: on-call lead / team -->
+4. Identify the proximate cause: recent deploy? Traffic spike? Upstream service failure?
+5. **Mitigate first** — rollback if needed (see [15-RUNBOOK-DEPLOY.md](./15-RUNBOOK-DEPLOY.md)). Root cause second.
+6. Post status updates every 15 minutes until resolved.
+7. Write the incident report within 24 hours (template below).
+
+## Common failure modes
+<!-- AI: Fill this table as incidents occur. It grows over time. -->
+| Symptom | Likely cause | First action |
+|---------|-------------|-------------|
+| API 500s spiking | Bad deploy or slow DB query | Check deploy logs, then slow query log |
+| Auth / login broken | Auth service down or JWT secret rotated | Check auth service health, check secret age |
+| Emails not sending | SMTP credentials expired or rate-limited | Check SMTP provider dashboard |
+| <!-- AI: fill as incidents occur --> | <!-- AI: fill --> | <!-- AI: fill --> |
+
+## Incident report format
+<!-- AI: Write one of these for every P1 or P2. File it within 24 hours of resolution. -->
+```markdown
+## Incident: [Short title] — YYYY-MM-DD
+**Severity:** P1 / P2 / P3
+**Duration:** HH:MM — HH:MM UTC
+**Impact:** Who was affected and how.
+**Root cause:** What actually went wrong.
+**Timeline:**
+- HH:MM UTC — [event]
+- HH:MM UTC — [event]
+**Fix:** What was done to resolve it.
+**Prevention:** What changes will prevent recurrence.
+```

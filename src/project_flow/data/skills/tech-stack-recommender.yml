@@ -1,0 +1,18 @@
+name: tech-stack-recommender
+description: Suggest appropriate tech stack based on project constraints
+triggers:
+  - "what stack should I use"
+  - "choose a framework"
+  - "pick a database"
+  - "technology selection"
+  - "what technology"
+content: |
+  When asked about technology choices:
+
+  1. First clarify: team size, deployment environment, performance needs, budget, timeline
+  2. Generate 2-3 stack options with trade-offs
+  3. Include: language, framework, database, hosting, testing tools
+  4. Provide "quick start" path for each option
+  5. Flag potential integration pain points upfront
+
+  **Why:** Prevents "shiny object syndrome" and mismatched stacks that cause pain months later.

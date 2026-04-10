@@ -1,0 +1,8 @@
+{
+  "Python": "**/*.py",
+  "TypeScript": "**/*.ts,**/*.tsx",
+  "JavaScript": "**/*.js,**/*.jsx",
+  "Dart": "**/*.dart",
+  "Go": "**/*.go",
+  "Rust": "**/*.rs"
+}

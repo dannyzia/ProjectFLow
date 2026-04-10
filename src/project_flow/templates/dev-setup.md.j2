@@ -1,0 +1,71 @@
+<!--
+AI: This is the complete local development setup procedure. Follow it in order. Do not skip steps.
+Read first: 03-TECH-STACK.md (for tool versions), 11-ENV-VARS.md (for what goes in .env)
+You must: Verify the setup works using the checklist at the end. Do not assume success.
+You must not: Skip the environment variable step. Hard-code any values that belong in .env.
+Human reviews this: NO — this is an executable setup guide for AI and developers.
+-->
+
+# Local Dev Setup
+**Project:** {{ project_name }}
+
+## Prerequisites
+<!-- AI: Fill from 03-TECH-STACK.md. Include exact minimum versions. -->
+| Tool | Minimum version | Install command / link |
+|------|----------------|------------------------|
+| <!-- AI: e.g. Node.js --> | <!-- AI: e.g. 20.x --> | <!-- AI: e.g. https://nodejs.org --> |
+| <!-- AI: e.g. Docker --> | <!-- AI: e.g. 24.x --> | <!-- AI: e.g. https://docs.docker.com --> |
+| <!-- AI: e.g. pnpm --> | <!-- AI: e.g. 8.x --> | <!-- AI: e.g. npm install -g pnpm --> |
+
+## Steps
+
+### 1. Clone and install
+```bash
+git clone <!-- AI: repo URL -->
+cd <!-- AI: repo directory name -->
+<!-- AI: install command, e.g. pnpm install -->
+```
+
+### 2. Configure environment
+```bash
+cp .env.example .env
+```
+<!-- AI: List each variable the dev must manually fill in. Do not list ones with safe defaults. -->
+Open `.env` and set:
+- `<!-- AI: VARIABLE_NAME -->` — <!-- AI: where to get this value -->
+
+See [11-ENV-VARS.md](./11-ENV-VARS.md) for the full variable reference.
+
+### 3. Start required services
+```bash
+<!-- AI: e.g. docker compose up -d — or write "No external services required." -->
+```
+
+### 4. Run database migrations
+```bash
+<!-- AI: migration command, e.g. pnpm db:migrate -->
+```
+
+### 5. Seed sample data (optional)
+```bash
+<!-- AI: seed command, or write "No seed data available." -->
+```
+
+### 6. Start dev server
+```bash
+<!-- AI: start command, e.g. pnpm dev -->
+```
+App runs at: `http://localhost:<!-- AI: port -->`
+
+## Verify it works
+<!-- AI: After setup, confirm every item below before considering setup complete. -->
+- [ ] App loads at `http://localhost:<!-- AI: port -->` with no console errors
+- [ ] Health check returns OK: `<!-- AI: e.g. curl http://localhost:3000/api/health -->`
+- [ ] Can log in with test credentials: <!-- AI: provide seeded email/password or write "N/A" -->
+- [ ] <!-- AI: add one project-specific smoke test -->
+
+## Common issues
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| <!-- AI: e.g. "Port 5432 already in use" --> | <!-- AI: e.g. PostgreSQL running locally --> | <!-- AI: e.g. Stop local postgres or change docker port --> |
+| <!-- AI: fill --> | <!-- AI: fill --> | <!-- AI: fill --> |

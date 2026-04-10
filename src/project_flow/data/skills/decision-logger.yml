@@ -1,0 +1,17 @@
+name: decision-logger
+description: Log architectural decisions with context and rationale
+triggers:
+  - "we decided to"
+  - "let's go with"
+  - "why did we choose"
+  - "record this decision"
+  - "document this choice"
+content: |
+  When the user makes a significant technical decision:
+
+  1. Record the decision, alternatives considered, and rationale
+  2. Save to `docs/decisions/YYYY-MM-DD-decision-name.md`
+  3. Include date, context, decision, consequences, and status
+  4. Cross-reference related decisions
+
+  **Why:** Every project needs an audit trail of "why we did this" – prevents future confusion and re-litigation.
