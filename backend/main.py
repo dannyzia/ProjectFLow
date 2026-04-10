@@ -44,7 +44,7 @@ def _try_model(model: str, messages: list[dict]) -> dict | None:
     headers = {
         "Authorization": f"Bearer {OPENROUTER_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://project-flow-api.onrender.com",
+        "HTTP-Referer": "https://projectflow-csxf.onrender.com",
         "X-Title": "Project Flow",
     }
     payload = {"model": model, "messages": messages}

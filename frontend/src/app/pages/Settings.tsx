@@ -63,7 +63,7 @@ export function Settings() {
             <h2 className="text-lg font-semibold text-white mb-4">AI Backend</h2>
             <div className="flex items-center gap-2">
               <span className="text-[#cbd5e1]">Connected to:</span>
-              <span className="text-white font-mono text-sm">project-flow-api.onrender.com</span>
+              <span className="text-white font-mono text-sm">projectflow-csxf.onrender.com</span>
             </div>
             <p className="text-sm text-gray-500 mt-2">
               API key is managed server-side.

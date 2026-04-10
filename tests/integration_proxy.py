@@ -6,14 +6,14 @@ Two modes:
      No API key needed locally; the key is already on the server.
 
        python tests/integration_proxy.py
-           uses RENDER_URL env var, or https://project-flow-api.onrender.com
+           uses RENDER_URL env var, or https://projectflow-csxf.onrender.com
 
   2. Local — spins up the proxy on port 8081 using a local key.
 
        PROXY_LOCAL=1 OPENROUTER_API_KEY=sk-or-... python tests/integration_proxy.py
 
 Optional env vars:
-    RENDER_URL        Live proxy base URL  (default: https://project-flow-api.onrender.com)
+    RENDER_URL        Live proxy base URL  (default: https://projectflow-csxf.onrender.com)
     PROXY_LOCAL       Set to 1 to run locally instead of against Render
     OPENROUTER_API_KEY  Required only in local mode
     PROXY_PORT        Local port  (default 8081)
@@ -40,7 +40,7 @@ if LOCAL_MODE:
     BASE = f"http://{HOST}:{PORT}"
     KEY = os.environ.get("OPENROUTER_API_KEY", "")
 else:
-    BASE = os.environ.get("RENDER_URL", "https://project-flow-api.onrender.com").rstrip("/")
+    BASE = os.environ.get("RENDER_URL", "https://projectflow-csxf.onrender.com").rstrip("/")
     KEY = ""  # key is on Render, not needed locally
 
 BACKEND_DIR = Path(__file__).parent.parent / "backend"
