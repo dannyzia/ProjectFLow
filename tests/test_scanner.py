@@ -2,7 +2,7 @@
 
 import pytest
 
-from project_flow.scanner import find_config_files, parse_repo_url
+from project_flow.scanner import find_config_files, parse_repo_url, scan_local_project
 
 
 class TestParseRepoUrl:
@@ -118,3 +118,68 @@ class TestFindConfigFiles:
         matched = find_config_files(tree)
         assert "docker-compose.yml" in matched
         assert "Dockerfile" in matched
+
+
+class TestScanLocalProject:
+    """Tests for scan_local_project() — local filesystem scanner."""
+
+    def test_scan_returns_expected_shape(self, tmp_path):
+        (tmp_path / "pyproject.toml").write_text("[project]\nname = 'test'")
+        (tmp_path / "README.md").write_text("# Test")
+        result = scan_local_project(tmp_path)
+        assert "path" in result
+        assert "tree" in result
+        assert "config_files" in result
+        assert "file_contents" in result
+
+    def test_scan_reads_config_files_from_disk(self, tmp_path):
+        content = "[project]\nname = 'hello'"
+        (tmp_path / "pyproject.toml").write_text(content)
+        result = scan_local_project(tmp_path)
+        assert "pyproject.toml" in result["file_contents"]
+        assert result["file_contents"]["pyproject.toml"] == content
+
+    def test_scan_excludes_node_modules(self, tmp_path):
+        (tmp_path / "node_modules").mkdir()
+        (tmp_path / "node_modules" / "package.json").write_text("{}")
+        (tmp_path / "package.json").write_text('{"name": "app"}')
+        result = scan_local_project(tmp_path)
+        assert "package.json" in result["file_contents"]
+        assert "node_modules/package.json" not in result["file_contents"]
+
+    def test_scan_excludes_venv(self, tmp_path):
+        (tmp_path / ".venv").mkdir()
+        (tmp_path / ".venv" / "pyproject.toml").write_text("[venv]")
+        (tmp_path / "pyproject.toml").write_text("[project]")
+        result = scan_local_project(tmp_path)
+        assert ".venv/pyproject.toml" not in result["file_contents"]
+        assert "pyproject.toml" in result["file_contents"]
+
+    def test_scan_excludes_git_dir(self, tmp_path):
+        (tmp_path / ".git").mkdir()
+        (tmp_path / ".git" / "config").write_text("[core]")
+        (tmp_path / "pyproject.toml").write_text("[project]")
+        result = scan_local_project(tmp_path)
+        assert ".git/config" not in result["file_contents"]
+
+    def test_scan_path_not_found_raises(self, tmp_path):
+        with pytest.raises(FileNotFoundError):
+            scan_local_project(tmp_path / "does_not_exist")
+
+    def test_scan_file_as_path_raises(self, tmp_path):
+        f = tmp_path / "somefile.py"
+        f.write_text("x = 1")
+        with pytest.raises(ValueError):
+            scan_local_project(f)
+
+    def test_scan_tree_contains_relative_paths(self, tmp_path):
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src" / "main.py").write_text("pass")
+        (tmp_path / "pyproject.toml").write_text("[project]")
+        result = scan_local_project(tmp_path)
+        assert any("src/main.py" in p or "src\\main.py" in p for p in result["tree"])
+
+    def test_scan_empty_directory_returns_empty_contents(self, tmp_path):
+        result = scan_local_project(tmp_path)
+        assert result["file_contents"] == {}
+        assert result["tree"] == []

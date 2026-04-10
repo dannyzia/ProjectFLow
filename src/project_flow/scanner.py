@@ -1,6 +1,6 @@
-"""GitHub repository scanner for Project Flow.
+"""Project scanner for Project Flow.
 
-Fetches repo tree and file contents via GitHub API.
+Supports scanning local directories and GitHub repositories.
 All file patterns come from data/detection-patterns.json — nothing hardcoded.
 """
 
@@ -8,6 +8,7 @@ import base64
 import logging
 import re
 from fnmatch import fnmatch
+from pathlib import Path
 
 import requests
 
@@ -208,6 +209,76 @@ def scan_project(repo_url: str, token: str = "") -> dict:
         "url": repo_url,
         "owner": owner,
         "repo": repo,
+        "tree": tree,
+        "config_files": config_files,
+        "file_contents": file_contents,
+    }
+
+
+def scan_local_project(project_path: str | Path) -> dict:
+    """Scan a local project directory for config files.
+
+    Walks the directory tree, finds files matching detection patterns,
+    and reads their contents directly from disk.
+
+    Args:
+        project_path: Absolute or relative path to the project root.
+
+    Returns:
+        {
+            "path": str,
+            "tree": list[str],          # relative paths from project root
+            "config_files": list[str],  # matched relative paths
+            "file_contents": dict[str, str],  # relative path -> content
+        }
+    """
+    patterns = load_detection_patterns()
+    max_size = patterns.get("max_file_size_bytes", 1048576)
+    max_files = patterns.get("max_files_to_fetch", 20)
+
+    root = Path(project_path).expanduser().resolve()
+    if not root.exists():
+        raise FileNotFoundError(f"Project path not found: {root}")
+    if not root.is_dir():
+        raise ValueError(f"Project path is not a directory: {root}")
+
+    # Build relative file tree (skip hidden dirs like .git, __pycache__, node_modules)
+    _SKIP_DIRS = {
+        ".git", "__pycache__", "node_modules", ".venv", "venv",
+        "dist", "build", ".mypy_cache", ".pytest_cache", ".tox",
+        "coverage", ".eggs", "*.egg-info",
+    }
+
+    tree: list[str] = []
+    for item in root.rglob("*"):
+        if not item.is_file():
+            continue
+        # Skip files inside ignored directories
+        parts = item.relative_to(root).parts
+        if any(p in _SKIP_DIRS or p.endswith(".egg-info") for p in parts[:-1]):
+            continue
+        tree.append(str(item.relative_to(root)))
+
+    logger.info("Found %d files in local project tree", len(tree))
+
+    config_files = find_config_files(tree)
+    logger.info("Found %d config files", len(config_files))
+
+    file_contents: dict[str, str] = {}
+    for rel_path in config_files[:max_files]:
+        abs_path = root / rel_path
+        try:
+            if abs_path.stat().st_size > max_size:
+                logger.debug("Skipping large file: %s", rel_path)
+                continue
+            file_contents[rel_path] = abs_path.read_text(encoding="utf-8", errors="replace")
+        except OSError as e:
+            logger.warning("Could not read %s: %s", rel_path, e)
+
+    logger.info("Read %d file contents", len(file_contents))
+
+    return {
+        "path": str(root),
         "tree": tree,
         "config_files": config_files,
         "file_contents": file_contents,

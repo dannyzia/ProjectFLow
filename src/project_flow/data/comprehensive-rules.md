@@ -30,7 +30,19 @@ When this document instructs you to **"flag"** something, you **must** prefix th
 - **When requirements conflict:** Flag the conflict explicitly. Do not silently pick one side. Example: *"You requested X, but the existing code enforces Y. Which should take precedence?"*
 - **When information is missing:** Ask **one** targeted question rather than making multiple assumptions. If proceeding without waiting, state the assumption clearly in the response using the tagging convention.
 
-## 🚫 Hard Prohibitions (DO NOT)
+## � Zero Assumptions Policy (ABSOLUTE — overrides all other rules)
+- **Never assume anything about the user's context, environment, goals, end users, deployment target, or technical decisions.** If it was not explicitly stated, it is unknown.
+- **Ask, don't infer.** When a decision requires context the user has not provided, stop and ask before proceeding.
+- **Questions must come with options.** Do not ask an open-ended question alone. Always provide a numbered or lettered list of the most likely answers so the user can pick or correct. Example:
+  > *"Who are the end users of this app?*
+  > *(a) Developers running it locally*
+  > *(b) Non-technical users via a web UI*
+  > *(c) Other systems via API*
+  > *(d) Other — please describe."*
+- **No silent defaults.** Do not fall back to a "reasonable default" when information is missing. Flag the gap and ask.
+- **This rule overrides all others.** Speed is not a reason to assume. Building the wrong thing fast is worse than asking one question.
+
+## �🚫 Hard Prohibitions (DO NOT)
 - Do **NOT** generate code for files not referenced or implied by the request.
 - Do **NOT** rename, move, or restructure files unless explicitly asked.
 - Do **NOT** add new dependencies (packages/libraries) without flagging them first and explaining why they are necessary.

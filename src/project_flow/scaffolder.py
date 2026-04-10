@@ -60,7 +60,7 @@ def generate_planning_stubs(
         Artifact(path=str(plan_root / DEFAULT_PLAN_ENV_VARS_FILE), content=_render("env-vars.md.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_FOLDER_STRUCTURE_FILE), content=_render("folder-structure.md.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_CONVENTIONS_FILE), content=_render("conventions.md.j2"), source="scaffold"),
-        Artifact(path=str(plan_root / DEFAULT_PLAN_DEV_CHECKLIST_FILE), content=_render("dev-checklist.md.j2"), source="scaffold"),
+        Artifact(path=str(plan_root / DEFAULT_PLAN_DEV_CHECKLIST_FILE), content=_render("dev-checklist.json.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_RUNBOOK_FILE), content=_render("runbook-deploy.md.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_INCIDENT_RESPONSE_FILE), content=_render("incident-response.md.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_MONITORING_FILE), content=_render("monitoring.md.j2"), source="scaffold"),

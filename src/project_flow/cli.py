@@ -21,7 +21,7 @@ from project_flow.config import load_config
 from project_flow.context import build_ai_context, build_generic_context
 from project_flow.models import Artifact
 from project_flow.scaffolder import generate_planning_stubs
-from project_flow.scanner import parse_repo_url, scan_project
+from project_flow.scanner import parse_repo_url, scan_local_project
 from project_flow.tech_stack import parse_from_string
 from project_flow.writer import ArtifactWriter
 
@@ -74,12 +74,6 @@ def main() -> None:
         parents=[parent_parser],
     )
     scaffold_parser.add_argument(
-        "--repo",
-        type=str,
-        required=True,
-        help="GitHub repo URL to scan (e.g. https://github.com/user/repo).",
-    )
-    scaffold_parser.add_argument(
         "--ides",
         type=str,
         default="",
@@ -130,16 +124,10 @@ def main() -> None:
         parents=[parent_parser],
     )
     analyze_parser.add_argument(
-        "--repo",
+        "--path",
         type=str,
         required=True,
-        help="GitHub repo URL to scan (e.g. https://github.com/user/repo).",
-    )
-    analyze_parser.add_argument(
-        "--github-token",
-        type=str,
-        default="",
-        help="GitHub API token for private repos.",
+        help="Path to the local project folder to analyze.",
     )
     analyze_parser.add_argument(
         "--ides",
@@ -167,6 +155,24 @@ def main() -> None:
         "--no-backup", action="store_true", help="Do not create backup files."
     )
 
+    # Step 7: Subcommand 'serve'
+    serve_parser = subparsers.add_parser(
+        "serve",
+        help="Start the Project Flow web UI at localhost.",
+        parents=[parent_parser],
+    )
+    serve_parser.add_argument(
+        "--port",
+        type=int,
+        default=8080,
+        help="Port to listen on (default: 8080).",
+    )
+    serve_parser.add_argument(
+        "--no-browser",
+        action="store_true",
+        help="Do not open the browser automatically.",
+    )
+
     # Step 8: Parse args. If no command given, print help and exit 1.
     args = parser.parse_args()
     if args.command is None:
@@ -183,6 +189,10 @@ def main() -> None:
 
     # Step 10: Wrap the rest in try/except
     try:
+        if args.command == "serve":
+            _handle_serve(args)
+            return
+
         config = load_config(Path(args.config))
 
         if args.command == "scaffold":
@@ -257,10 +267,10 @@ def _validate_no_path_conflicts(artifacts: list[Artifact]) -> None:
         )
 
 
-def _resolve_scaffold_output_root(args: argparse.Namespace, repo: str) -> tuple[Path, str]:
+def _resolve_scaffold_output_root(args: argparse.Namespace, default_name: str = "") -> tuple[Path, str]:
     """Resolve scaffold output root and project name from args and interactive input."""
     yes = getattr(args, "yes", False)
-    default_project_name = args.project_name or repo
+    default_project_name = args.project_name or default_name or DEFAULT_PROJECT_NAME
     project_name = args.project_name.strip() if args.project_name else ""
     if not project_name:
         if yes:
@@ -300,10 +310,38 @@ def _resolve_scaffold_output_root(args: argparse.Namespace, repo: str) -> tuple[
     return output_root, project_name
 
 
+def _handle_serve(args: argparse.Namespace) -> None:
+    """Handle the 'serve' subcommand — start local web UI."""
+    import threading
+    import time
+    import webbrowser
+
+    import uvicorn
+
+    from project_flow.web.server import app
+
+    port = args.port
+    url = f"http://localhost:{port}"
+
+    # Silence all project_flow loggers — the browser UI handles user feedback
+    logging.getLogger("project_flow").setLevel(logging.ERROR)
+    logging.getLogger("uvicorn.access").setLevel(logging.ERROR)
+    logging.getLogger("uvicorn.error").setLevel(logging.ERROR)
+
+    def _open_browser() -> None:
+        time.sleep(1.2)
+        webbrowser.open(url)
+
+    if not args.no_browser:
+        threading.Thread(target=_open_browser, daemon=True).start()
+
+    print(f"Project Flow running at {url}  (Ctrl+C to stop)")
+    uvicorn.run(app, host="127.0.0.1", port=port, log_level="error")
+
+
 def _handle_scaffold(args: argparse.Namespace, config) -> None:
     """Handle the 'scaffold' subcommand."""
-    repo_info = parse_repo_url(args.repo)
-    output_root, project_name = _resolve_scaffold_output_root(args, repo_info["repo"])
+    output_root, project_name = _resolve_scaffold_output_root(args)
     selected_ides = _collect_selected_ides(args, config)
 
     project_description = (
@@ -370,11 +408,9 @@ def _handle_analyze(args: argparse.Namespace, config) -> None:
     from project_flow.config import get_effective_user_config
     from project_flow.models import TechStackData
 
-    output_root = Path(args.output_root).expanduser().resolve()
-    if args.output_root == ".":
-        logger.warning(
-            "No --output-root specified. Writing to current directory: %s", output_root
-        )
+    # Default output root to the project path being analyzed
+    raw_output = args.output_root if args.output_root and args.output_root != "." else args.path
+    output_root = Path(raw_output).expanduser().resolve()
     if not output_root.exists():
         raise FileNotFoundError(f"Output root not found: {output_root}")
 
@@ -383,13 +419,13 @@ def _handle_analyze(args: argparse.Namespace, config) -> None:
 
     if not user_config.ai.key or "PLACEHOLDER" in user_config.ai.key:
         raise ValueError(
-            "AI API key not configured. Set a valid key in src/project_flow/data/ai-config.json "
-            "or via PROJECT_FLOW_AI_KEY environment variable."
+            "AI API key not configured. The key is managed server-side. "
+            "Ensure the Render proxy is running and reachable."
         )
 
-    scan_result = scan_project(args.repo, token=getattr(args, "github_token", ""))
+    scan_result = scan_local_project(args.path)
     if not scan_result.get("file_contents"):
-        raise ValueError("No repository files available for AI analysis.")
+        raise ValueError("No project files found for AI analysis.")
 
     ai_tech_stack = detect_tech_stack(scan_result["file_contents"], user_config)
     ai_project_name, ai_project_desc = detect_project_name(
@@ -402,7 +438,7 @@ def _handle_analyze(args: argparse.Namespace, config) -> None:
         ai_tech_stack,
         config.skills,
         user_config,
-        repo_url=args.repo,
+        repo_url="",
         tech_stack_details=parsed_stack.tech_stack_details,
     )
 
@@ -410,7 +446,7 @@ def _handle_analyze(args: argparse.Namespace, config) -> None:
         ai_project_name
         or parsed_stack.project_name
         or config.project.name
-        or parse_repo_url(args.repo)["repo"]
+        or Path(args.path).name
     )
     project_desc = (
         ai_project_desc
