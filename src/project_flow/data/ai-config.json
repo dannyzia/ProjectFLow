@@ -14,6 +14,6 @@
   },
   "auth_suggestions": {
     "endpoint": "https://project-flow-api.onrender.com/proxy",
-    "model": "glm-5.1"
+    "model": "z-ai/glm-4.5-air:free"
   }
 }
