@@ -47,6 +47,7 @@ def generate_planning_stubs(
         return _ENV.get_template(template_name).render(**ctx)
 
     return [
+        Artifact(path="project-flow.yml", content=_render("project-flow.yml.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_PRD_FILE), content=_render("prd.md.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_ARCH_FILE), content=_render("architecture.md.j2"), source="scaffold"),
         Artifact(path=str(plan_root / DEFAULT_PLAN_TECH_STACK_FILE), content=_render("tech-stack.md.j2"), source="scaffold"),
