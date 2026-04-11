@@ -25,20 +25,23 @@
 
 ## Installation
 
+### One-command install (recommended)
+
+**Linux / macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/dannyzia/ProjectFLow/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/dannyzia/ProjectFLow/main/install.ps1 | iex
+```
+
+The script auto-detects your OS, installs into an isolated environment (no admin rights needed on most systems), and adds `project-flow` to your PATH.  Restart your terminal after install if the command isn't found immediately.
+
 ### Requirements
 
 - Python 3.11 or higher
-- pip package manager
-
-### From Source
-
-```bash
-git clone <repository-url>
-cd project-flow
-python -m venv venv
-source venv/bin/activate          # On Windows: venv\Scripts\activate
-pip install -e ".[dev]"
-```
 
 ### Verify Installation
 
