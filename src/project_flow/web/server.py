@@ -91,7 +91,11 @@ def api_scaffold(req: ScaffoldRequest) -> dict:
     config_path = output_root / DEFAULT_CONFIG_FILENAME
     if not config_path.exists():
         config_path = Path(DEFAULT_CONFIG_FILENAME)
-    config = load_config(config_path)
+    try:
+        config = load_config(config_path)
+    except FileNotFoundError:
+        from project_flow.models import FullConfig
+        config = FullConfig()
 
     project_description = (
         req.project_description
@@ -168,7 +172,11 @@ def api_analyze(req: AnalyzeRequest) -> dict:
     config_path = project_root / DEFAULT_CONFIG_FILENAME
     if not config_path.exists():
         config_path = Path(DEFAULT_CONFIG_FILENAME)
-    config = load_config(config_path)
+    try:
+        config = load_config(config_path)
+    except FileNotFoundError:
+        from project_flow.models import FullConfig
+        config = FullConfig()
 
     for ide in SUPPORTED_IDES:
         setattr(config.ides, ide, ide in req.ides)
