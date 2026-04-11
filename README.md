@@ -47,7 +47,7 @@ The script auto-detects your OS, installs into an isolated environment (no admin
 
 ```bash
 project-flow --version
-# Output: project-flow 0.1.0
+# Output: project-flow 1.0.0
 ```
 
 ## Quick Start
