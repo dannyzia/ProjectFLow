@@ -32,8 +32,8 @@ Write-Host "  Using $pyVer" -ForegroundColor Green
 # ── 2. Create venv ───────────────────────────────────────────────────────────
 Write-Host "  Installing project-flow into $VENV_DIR ..." -ForegroundColor Green
 & $python -m venv $VENV_DIR
-& "$VENV_DIR\Scripts\pip" install -q --upgrade pip
-& "$VENV_DIR\Scripts\pip" install -q $REPO
+& "$VENV_DIR\Scripts\python.exe" -m pip install -q --upgrade pip
+& "$VENV_DIR\Scripts\python.exe" -m pip install -q $REPO
 
 # ── 3. Add to user PATH ───────────────────────────────────────────────────────
 $BinPath = "$VENV_DIR\Scripts"
