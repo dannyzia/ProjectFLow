@@ -45,15 +45,13 @@ $env:Path = "$env:Path;$BinPath"
 
 # ── 4. Verify ─────────────────────────────────────────────────────────────────
 Write-Host ""
-if (Get-Command project-flow -ErrorAction SilentlyContinue) {
-    Write-Host "  OK  project-flow installed successfully!" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "  Run it:  project-flow serve" -ForegroundColor White
-} else {
-    Write-Host "  OK  Installed! Restart your terminal, then run:" -ForegroundColor Green
-    Write-Host "       project-flow serve" -ForegroundColor White
-    Write-Host ""
-    Write-Host "  Or run immediately:" -ForegroundColor Gray
-    Write-Host "       $VENV_DIR\Scripts\project-flow serve" -ForegroundColor Gray
-}
+Write-Host "  OK  project-flow installed successfully!" -ForegroundColor Green
 Write-Host ""
+Write-Host "  Starting project-flow serve ..." -ForegroundColor White
+Write-Host ""
+
+if (Get-Command project-flow -ErrorAction SilentlyContinue) {
+    project-flow serve
+} else {
+    & "$VENV_DIR\Scripts\project-flow" serve
+}

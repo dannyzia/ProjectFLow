@@ -92,21 +92,16 @@ else
 fi
 
 # ── Verify ────────────────────────────────────────────────────────────────────
+echo ""
+echo -e "  ${GREEN}✓ project-flow installed successfully!${NC}"
+echo ""
+echo "  Starting project-flow serve ..."
+echo ""
+
 if command -v project-flow &>/dev/null; then
-    echo ""
-    echo -e "  ${GREEN}✓ project-flow installed successfully!${NC}"
-    echo ""
-    echo "  Run it:  project-flow serve"
-    echo ""
+    project-flow serve
+elif [ -f "$VENV_DIR/bin/project-flow" ]; then
+    "$VENV_DIR/bin/project-flow" serve
 else
-    echo ""
-    echo -e "  ${GREEN}✓ Installed via $METHOD${NC}"
-    echo ""
-    echo "  Restart your terminal, then run:  project-flow serve"
-    echo ""
-    if [ "$METHOD" = "venv" ]; then
-        echo "  Or run immediately:"
-        echo "    $VENV_DIR/bin/project-flow serve"
-        echo ""
-    fi
+    warn "Could not find project-flow binary. Restart your terminal and run: project-flow serve"
 fi
