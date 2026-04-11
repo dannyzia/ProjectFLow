@@ -49,8 +49,4 @@ Write-Host ""
 Write-Host "  Starting project-flow serve ..." -ForegroundColor White
 Write-Host ""
 
-if (Get-Command project-flow -ErrorAction SilentlyContinue) {
-    project-flow serve
-} else {
-    & "$VENV_DIR\Scripts\project-flow" serve
-}
+& "$VENV_DIR\Scripts\project-flow.exe" serve
