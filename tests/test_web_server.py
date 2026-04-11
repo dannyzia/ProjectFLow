@@ -168,3 +168,18 @@ class TestAnalyzeEndpoint:
             response = client.post("/api/analyze", json=payload)
         assert response.status_code == 503
         assert "Invalid API response" in response.json()["detail"]
+
+    def test_analyze_unexpected_exception_returns_json_500(self, tmp_path):
+        (tmp_path / "pyproject.toml").write_text("[project]\nname = 'test'")
+        payload = {"project_path": str(tmp_path), "ides": ["vscode"]}
+        mock_config = MagicMock()
+        mock_config.ai.key = "real-key"
+        with (
+            patch("project_flow.web.server.get_effective_user_config", return_value=mock_config),
+            patch("project_flow.ai_brain.detect_tech_stack", side_effect=RuntimeError("something unexpected")),
+        ):
+            response = client.post("/api/analyze", json=payload)
+        assert response.status_code == 500
+        body = response.json()
+        assert "detail" in body
+        assert "something unexpected" in body["detail"]

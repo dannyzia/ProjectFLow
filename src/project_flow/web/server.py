@@ -11,7 +11,7 @@ import sys
 import threading
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -24,6 +24,16 @@ logger = logging.getLogger(__name__)
 _STATIC_DIR = Path(__file__).parent / "static"
 
 app = FastAPI(title="Project Flow", docs_url=None, redoc_url=None)
+
+
+@app.exception_handler(Exception)
+async def _unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    """Return a JSON error body for any unhandled exception instead of plain-text 500."""
+    logger.exception("Unhandled error in %s %s", request.method, request.url.path)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"{type(exc).__name__}: {exc}"},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -182,6 +192,9 @@ def api_analyze(req: AnalyzeRequest) -> dict:
         ai_project_name, ai_project_desc = detect_project_name(scan_result["file_contents"], user_config)
     except (ConnectionError, ValueError) as exc:
         raise HTTPException(status_code=503, detail=str(exc))
+    except Exception as exc:
+        logger.exception("Unexpected error during tech-stack detection")
+        raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}")
 
     from project_flow.cli import _find_tech_stack_content
     tech_stack_content = _find_tech_stack_content(scan_result, config.project.tech_stack_file)
@@ -195,6 +208,9 @@ def api_analyze(req: AnalyzeRequest) -> dict:
         )
     except (ConnectionError, ValueError) as exc:
         raise HTTPException(status_code=503, detail=str(exc))
+    except Exception as exc:
+        logger.exception("Unexpected error during rules/skills generation")
+        raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}")
 
     project_name = ai_project_name or parsed_stack.project_name or config.project.name or project_root.name
     project_desc = ai_project_desc or parsed_stack.project_description or config.project.description or DEFAULT_PROJECT_DESCRIPTION
