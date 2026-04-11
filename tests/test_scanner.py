@@ -119,6 +119,32 @@ class TestFindConfigFiles:
         assert "docker-compose.yml" in matched
         assert "Dockerfile" in matched
 
+    def test_find_planning_doc_exact_path(self):
+        tree = ["docs/Plan/03-TECH-STACK.md", "src/main.py"]
+        matched = find_config_files(tree)
+        assert "docs/Plan/03-TECH-STACK.md" in matched
+
+    def test_find_planning_doc_tech_stack_md(self):
+        tree = ["TECH-STACK.md", "src/index.ts"]
+        matched = find_config_files(tree)
+        assert "TECH-STACK.md" in matched
+
+    def test_find_planning_doc_nested_tech_stack(self):
+        tree = ["docs/tech-stack.md", "README.md"]
+        matched = find_config_files(tree)
+        assert "docs/tech-stack.md" in matched
+
+    def test_find_planning_doc_stack_md(self):
+        tree = ["STACK.md", "src/app.py"]
+        matched = find_config_files(tree)
+        assert "STACK.md" in matched
+
+    def test_source_only_files_not_matched(self):
+        """Verify plain source files are NOT matched by find_config_files."""
+        tree = ["src/main.py", "src/utils.ts", "lib/helper.go"]
+        matched = find_config_files(tree)
+        assert matched == []
+
 
 class TestScanLocalProject:
     """Tests for scan_local_project() — local filesystem scanner."""
@@ -183,3 +209,36 @@ class TestScanLocalProject:
         result = scan_local_project(tmp_path)
         assert result["file_contents"] == {}
         assert result["tree"] == []
+
+    def test_scan_falls_back_to_source_files_when_no_config(self, tmp_path):
+        """When no config/planning files exist, source files should be sampled."""
+        (tmp_path / "main.py").write_text("def hello(): pass")
+        result = scan_local_project(tmp_path)
+        assert "main.py" in result["file_contents"]
+
+    def test_scan_source_fallback_capped_at_max_count(self, tmp_path):
+        """Source-file fallback should sample at most source_file_max_count files."""
+        for i in range(10):
+            (tmp_path / f"module{i}.py").write_text(f"x = {i}")
+        result = scan_local_project(tmp_path)
+        assert 1 <= len(result["file_contents"]) <= 5
+
+    def test_scan_source_fallback_not_triggered_when_config_found(self, tmp_path):
+        """When a config file IS found, source-file fallback should NOT run."""
+        (tmp_path / "pyproject.toml").write_text("[project]\nname='test'")
+        for i in range(10):
+            (tmp_path / f"module{i}.py").write_text(f"x = {i}")
+        result = scan_local_project(tmp_path)
+        # pyproject.toml must be present; total file count stays at 1 (no fallback flood)
+        assert "pyproject.toml" in result["file_contents"]
+        assert len(result["file_contents"]) == 1
+
+    def test_scan_planning_doc_is_read(self, tmp_path):
+        """Planning docs like docs/Plan/03-TECH-STACK.md should be read directly."""
+        docs_plan = tmp_path / "docs" / "Plan"
+        docs_plan.mkdir(parents=True)
+        tech_stack_content = "# Tech Stack\n- Python\n- FastAPI"
+        (docs_plan / "03-TECH-STACK.md").write_text(tech_stack_content)
+        result = scan_local_project(tmp_path)
+        assert "docs/Plan/03-TECH-STACK.md" in result["file_contents"]
+        assert result["file_contents"]["docs/Plan/03-TECH-STACK.md"] == tech_stack_content

@@ -19,9 +19,24 @@
     ".github/workflows/*.yml", ".github/workflows/*.yaml",
     "Makefile", "justfile", "Taskfile.yml", "Taskfile.yaml"
   ],
+  "planning_docs": [
+    "docs/Plan/03-TECH-STACK.md",
+    "docs/Plan/*.md",
+    "TECH-STACK.md",
+    "**/TECH-STACK.md",
+    "tech-stack.md",
+    "**/tech-stack.md",
+    "STACK.md",
+    "**/STACK.md",
+    "stack.md",
+    "**/stack.md",
+    "**/*[Tt]ech*[Ss]tack*.md"
+  ],
   "always_fetch": [
     "README.md", "LICENSE"
   ],
+  "source_file_extensions": [".py", ".ts", ".js", ".tsx", ".jsx", ".go", ".rs", ".rb", ".java", ".cs", ".php", ".swift", ".kt", ".ex", ".scala"],
+  "source_file_max_count": 5,
   "max_file_size_bytes": 1048576,
   "max_files_to_fetch": 20,
   "github_api": {

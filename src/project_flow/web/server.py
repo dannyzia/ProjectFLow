@@ -193,7 +193,7 @@ def api_analyze(req: AnalyzeRequest) -> dict:
                 except OSError:
                     pass
         if not scan_result.get("file_contents"):
-            return {"needs_hint": True}
+            return {"needs_hint": True, "hint_type": "tech_stack_doc"}
 
     try:
         ai_tech_stack = detect_tech_stack(scan_result["file_contents"], user_config)

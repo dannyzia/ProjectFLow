@@ -100,6 +100,7 @@ def find_config_files(tree: list[str]) -> list[str]:
         all_patterns.extend(lang_patterns)
     all_patterns.extend(patterns.get("infra_files", []))
     all_patterns.extend(patterns.get("always_fetch", []))
+    all_patterns.extend(patterns.get("planning_docs", []))
 
     # Match each file against patterns
     matched = []
@@ -274,6 +275,31 @@ def scan_local_project(project_path: str | Path) -> dict:
             file_contents[rel_path] = abs_path.read_text(encoding="utf-8", errors="replace")
         except OSError as e:
             logger.warning("Could not read %s: %s", rel_path, e)
+
+    # Fallback: if no config/planning files matched, sample source files so the
+    # AI can still infer language and framework from actual code.
+    if not file_contents:
+        src_extensions = set(patterns.get("source_file_extensions", []))
+        src_max = patterns.get("source_file_max_count", 5)
+        # Sort shallowest paths first so we grab top-level files before deep ones
+        sorted_tree = sorted(tree, key=lambda p: (p.count("/"), p.count("\\"), p))
+        sampled = 0
+        for rel_path in sorted_tree:
+            if sampled >= src_max:
+                break
+            ext = "." + rel_path.rsplit(".", 1)[-1] if "." in rel_path else ""
+            if ext not in src_extensions:
+                continue
+            abs_path = root / rel_path
+            try:
+                if abs_path.stat().st_size > max_size:
+                    continue
+                file_contents[rel_path] = abs_path.read_text(encoding="utf-8", errors="replace")
+                sampled += 1
+            except OSError as e:
+                logger.warning("Could not read source file %s: %s", rel_path, e)
+        if file_contents:
+            logger.info("Source-file fallback: sampled %d files for AI detection", len(file_contents))
 
     logger.info("Read %d file contents", len(file_contents))
 

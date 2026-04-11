@@ -144,18 +144,18 @@ export function AnalyzeForm() {
           {/* Hint Section — shown when no config files were auto-detected */}
           {needsHint && (
             <div className="bg-[#1e293b] rounded-[12px] p-6 border border-yellow-600">
-              <h2 className="text-lg font-semibold text-yellow-400 mb-2">No config files detected</h2>
-              <p className="text-sm text-[#cbd5e1] mb-4">
-                The scanner looks for files like <span className="text-white font-mono text-xs">package.json</span>, <span className="text-white font-mono text-xs">pyproject.toml</span>, <span className="text-white font-mono text-xs">requirements.txt</span>, <span className="text-white font-mono text-xs">Cargo.toml</span>, <span className="text-white font-mono text-xs">go.mod</span>, <span className="text-white font-mono text-xs">pom.xml</span>, <span className="text-white font-mono text-xs">Dockerfile</span>, <span className="text-white font-mono text-xs">README.md</span>, and more. None were found in that folder.
+              <h2 className="text-lg font-semibold text-yellow-400 mb-2">Can't detect your tech stack</h2>
+              <p className="text-sm text-[#cbd5e1] mb-3">
+                The scanner looks for config files (<span className="text-white font-mono text-xs">package.json</span>, <span className="text-white font-mono text-xs">pyproject.toml</span>, <span className="text-white font-mono text-xs">Cargo.toml</span>, <span className="text-white font-mono text-xs">go.mod</span>, <span className="text-white font-mono text-xs">Dockerfile</span>, <span className="text-white font-mono text-xs">README.md</span>, etc.) and planning docs (<span className="text-white font-mono text-xs">docs/Plan/03-TECH-STACK.md</span>). It also samples source files as a fallback. None were found in that folder.
               </p>
               <p className="text-sm text-[#cbd5e1] mb-3">
-                Point to a specific file in your project and we'll use it instead:
+                Point to any document that describes your stack — a <span className="text-white font-mono text-xs">TECH-STACK.md</span>, a <span className="text-white font-mono text-xs">README.md</span>, or any <span className="text-white font-mono text-xs">.md</span> / <span className="text-white font-mono text-xs">.txt</span> file that lists your languages and tools:
               </p>
               <input
                 type="text"
                 value={hintPath}
                 onChange={(e) => setHintPath(e.target.value)}
-                placeholder="/path/to/your/project/somefile.txt"
+                placeholder="/path/to/your/project/docs/Plan/03-TECH-STACK.md"
                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
               />
             </div>
