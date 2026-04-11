@@ -26,9 +26,18 @@ def test_get_agent_finds_orchestrator(config_path: Path) -> None:
     """get_agent must find the orchestrator by slug."""
     config = load_config(config_path)
     agent = get_agent(config, "orchestrator")
+    assert agent is not None
     assert agent.display_name == "Orchestrator"
     assert agent.kilo.color == "red"
     assert len(agent.allowed_agents) > 0
+
+
+def test_get_agent_returns_none_for_missing_slug() -> None:
+    """get_agent must return None (not raise) when slug is absent."""
+    from project_flow.models import FullConfig
+
+    config = FullConfig()
+    assert get_agent(config, "nonexistent") is None
 
 
 def test_get_model_id_kilo(config_path: Path) -> None:

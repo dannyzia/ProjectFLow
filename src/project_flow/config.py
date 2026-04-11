@@ -375,25 +375,20 @@ def _resolve_agent_display_name(config: FullConfig, slug: str) -> str:
     return slug
 
 
-def get_agent(config: FullConfig, slug: str) -> AgentConfig:
-    """Return the AgentConfig matching the given slug.
+def get_agent(config: FullConfig, slug: str) -> AgentConfig | None:
+    """Return the AgentConfig matching the given slug, or None if not found.
 
     Args:
         config: The FullConfig object containing all agents.
         slug: The agent slug to look up.
 
     Returns:
-        The AgentConfig matching the slug.
-
-    Raises:
-        KeyError: If no agent with the given slug exists.
+        The AgentConfig matching the slug, or None if not found.
     """
     for agent in config.agents:
         if agent.slug == slug:
             return agent
-
-    available = [a.slug for a in config.agents]
-    raise KeyError(f"Agent not found: {slug}. Available: {available}")
+    return None
 
 
 def get_model_id(config: FullConfig, slug: str, ide: str) -> str:
@@ -408,6 +403,8 @@ def get_model_id(config: FullConfig, slug: str, ide: str) -> str:
         The model ID string for the agent in the specified IDE.
     """
     agent = get_agent(config, slug)
+    if agent is None:
+        return ""
 
     if ide == "kilo":
         return agent.models.kilo_id
@@ -451,6 +448,8 @@ def get_vscode_model_name(config: FullConfig, slug: str) -> str:
     Falls back to vscode_id, then primary if vscode_model is not set.
     """
     agent = get_agent(config, slug)
+    if agent is None:
+        return ""
     if agent.models.vscode_model:
         return agent.models.vscode_model
     if agent.models.vscode_id:
