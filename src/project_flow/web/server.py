@@ -8,6 +8,7 @@ import logging
 import platform
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -176,18 +177,24 @@ def api_analyze(req: AnalyzeRequest) -> dict:
         if not scan_result.get("file_contents"):
             return {"needs_hint": True}
 
-    ai_tech_stack = detect_tech_stack(scan_result["file_contents"], user_config)
-    ai_project_name, ai_project_desc = detect_project_name(scan_result["file_contents"], user_config)
+    try:
+        ai_tech_stack = detect_tech_stack(scan_result["file_contents"], user_config)
+        ai_project_name, ai_project_desc = detect_project_name(scan_result["file_contents"], user_config)
+    except (ConnectionError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
 
     from project_flow.cli import _find_tech_stack_content
     tech_stack_content = _find_tech_stack_content(scan_result, config.project.tech_stack_file)
     parsed_stack = parse_from_string(tech_stack_content) if tech_stack_content else TechStackData()
 
-    ai_rules = generate_rules(ai_tech_stack, user_config, tech_stack_details=parsed_stack.tech_stack_details)
-    ai_skills = generate_skills(
-        ai_tech_stack, config.skills, user_config,
-        repo_url="", tech_stack_details=parsed_stack.tech_stack_details,
-    )
+    try:
+        ai_rules = generate_rules(ai_tech_stack, user_config, tech_stack_details=parsed_stack.tech_stack_details)
+        ai_skills = generate_skills(
+            ai_tech_stack, config.skills, user_config,
+            repo_url="", tech_stack_details=parsed_stack.tech_stack_details,
+        )
+    except (ConnectionError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
 
     project_name = ai_project_name or parsed_stack.project_name or config.project.name or project_root.name
     project_desc = ai_project_desc or parsed_stack.project_description or config.project.description or DEFAULT_PROJECT_DESCRIPTION
@@ -259,6 +266,27 @@ def open_folder(path: str) -> dict:
 # ---------------------------------------------------------------------------
 # Frontend static files (served last so API routes take precedence)
 # ---------------------------------------------------------------------------
+
+def _warm_up_render() -> None:
+    """Ping the Render proxy in the background so it's warm for first analyze."""
+    def _ping() -> None:
+        try:
+            import requests as _req
+            cfg = get_effective_user_config()
+            if cfg.ai.endpoint and cfg.ai.key:
+                _req.post(
+                    cfg.ai.endpoint,
+                    json={"model": cfg.ai.model, "messages": [{"role": "user", "content": "ping"}], "max_tokens": 1},
+                    headers={"Authorization": f"Bearer {cfg.ai.key}", "Content-Type": "application/json"},
+                    timeout=90,
+                )
+        except Exception:
+            pass
+
+    threading.Thread(target=_ping, daemon=True).start()
+
+
+_warm_up_render()
 
 if _STATIC_DIR.exists():
     app.mount("/", StaticFiles(directory=str(_STATIC_DIR), html=True), name="static")

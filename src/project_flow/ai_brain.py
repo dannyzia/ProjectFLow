@@ -37,7 +37,9 @@ def _get_prompt(prompt_key: str) -> str:
     return config.get("prompts", {}).get(prompt_key, "")
 
 
-def _call_glm(endpoint: str, model: str, key: str, messages: list) -> str:
+def _call_glm(
+    endpoint: str, model: str, key: str, messages: list, max_tokens: int = 2000
+) -> str:
     """Make a raw API call to the GLM endpoint.
 
     Args:
@@ -45,6 +47,7 @@ def _call_glm(endpoint: str, model: str, key: str, messages: list) -> str:
         model: Model name (from user config).
         key: API key (from user config).
         messages: Chat messages list.
+        max_tokens: Maximum tokens in the response (limits reasoning time).
 
     Returns:
         The response text from the model.
@@ -60,14 +63,15 @@ def _call_glm(endpoint: str, model: str, key: str, messages: list) -> str:
     payload = {
         "model": model,
         "messages": messages,
+        "max_tokens": max_tokens,
     }
 
     logger.debug("Calling GLM API: %s model=%s", endpoint, model)
 
     try:
-        response = requests.post(endpoint, json=payload, headers=headers, timeout=120)
+        response = requests.post(endpoint, json=payload, headers=headers, timeout=90)
     except requests.Timeout:
-        raise ConnectionError(f"API request timed out after 120s: {endpoint}")
+        raise ConnectionError(f"API request timed out after 90s: {endpoint}")
     except requests.ConnectionError:
         raise ConnectionError(f"Cannot connect to API endpoint: {endpoint}")
     except requests.RequestException as e:
@@ -142,7 +146,8 @@ def detect_tech_stack(
 
     messages = [{"role": "user", "content": prompt}]
     response_text = _call_glm(
-        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages
+        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages,
+        max_tokens=300,
     )
 
     # Parse JSON from response
@@ -193,7 +198,8 @@ def detect_project_name(
 
     messages = [{"role": "user", "content": prompt}]
     response_text = _call_glm(
-        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages
+        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages,
+        max_tokens=150,
     )
 
     try:
@@ -251,7 +257,8 @@ def generate_rules(
 
     messages = [{"role": "user", "content": prompt}]
     return _call_glm(
-        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages
+        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages,
+        max_tokens=2000,
     )
 
 
@@ -290,7 +297,13 @@ def generate_skills(
     )
 
     sources_text = json.dumps(
-        [{"name": s["name"], "description": s["description"]} for s in skill_sources],
+        [
+            {
+                "name": s["name"] if isinstance(s, dict) else s.name,
+                "description": s["description"] if isinstance(s, dict) else s.description,
+            }
+            for s in skill_sources
+        ],
         indent=2,
     )
 
@@ -305,7 +318,8 @@ def generate_skills(
 
     messages = [{"role": "user", "content": prompt}]
     response_text = _call_glm(
-        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages
+        user_config.ai.endpoint, user_config.ai.model, user_config.ai.key, messages,
+        max_tokens=2000,
     )
 
     try:

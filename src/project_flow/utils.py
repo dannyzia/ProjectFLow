@@ -142,6 +142,7 @@ def fetch_source_content(url: str, timeout: int = 10) -> str:
         return ""
 
 
+@lru_cache(maxsize=1)
 def fetch_all_skill_sources() -> str:
     """Fetch and concatenate all skill source content.
 
@@ -165,6 +166,7 @@ def fetch_all_skill_sources() -> str:
     return "\n\n".join(contents)
 
 
+@lru_cache(maxsize=1)
 def fetch_all_rule_sources() -> str:
     """Fetch and concatenate all rule source content.
 
