@@ -10,24 +10,29 @@ Write-Host "  Project Flow - Installer" -ForegroundColor Cyan
 Write-Host "  ------------------------" -ForegroundColor Cyan
 Write-Host ""
 
-# ── 1. Require Python 3.11+ ──────────────────────────────────────────────────
+# ── 1. Require Python 3.11+ (but exclude 3.14 on Windows due to venv bug) ──
 $python = $null
+$pyVerInfo = $null
 foreach ($candidate in @("python", "python3", "py")) {
     try {
-        $ver = & $candidate -c "import sys; print(sys.version_info >= (3,11))" 2>$null
-        if ($ver -eq "True") { $python = $candidate; break }
+        $ver = & $candidate -c "import sys; print(sys.version_info >= (3,11) and sys.version_info < (3,14))" 2>$null
+        if ($ver -eq "True") {
+            $python = $candidate
+            $pyVerInfo = & $candidate -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')" 2>$null
+            break
+        }
     } catch {}
 }
 
 if (-not $python) {
-    Write-Host "  Python 3.11+ is required." -ForegroundColor Red
+    Write-Host "  Python 3.11-3.13 is required." -ForegroundColor Red
+    Write-Host "  Python 3.14 is not supported on Windows due to venv bugs." -ForegroundColor Yellow
     Write-Host "  Download from: https://www.python.org/downloads/" -ForegroundColor Red
     Write-Host "  Make sure to check 'Add Python to PATH' during install." -ForegroundColor Yellow
     exit 1
 }
 
-$pyVer = & $python --version
-Write-Host "  Using $pyVer" -ForegroundColor Green
+Write-Host "  Using Python $pyVerInfo" -ForegroundColor Green
 
 # ── 2. Create venv ───────────────────────────────────────────────────────────
 Write-Host "  Installing project-flow into $VENV_DIR ..." -ForegroundColor Green

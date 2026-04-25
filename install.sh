@@ -17,11 +17,11 @@ echo "  Project Flow — Installer"
 echo "  ────────────────────────"
 echo ""
 
-# ── 1. Require Python 3.11+ ──────────────────────────────────────────────────
+# ── 1. Require Python 3.11+ (but exclude 3.14 due to venv bugs) ───────────────
 PYTHON=""
 for candidate in python3 python3.13 python3.12 python3.11 python; do
     if command -v "$candidate" &>/dev/null; then
-        ver=$("$candidate" -c 'import sys; print(sys.version_info >= (3,11))' 2>/dev/null)
+        ver=$("$candidate" -c 'import sys; print(sys.version_info >= (3,11) and sys.version_info < (3,14))' 2>/dev/null)
         if [ "$ver" = "True" ]; then
             PYTHON="$candidate"
             break
@@ -29,7 +29,7 @@ for candidate in python3 python3.13 python3.12 python3.11 python; do
     fi
 done
 
-[ -z "$PYTHON" ] && die "Python 3.11+ is required. Install from https://python.org and try again."
+[ -z "$PYTHON" ] && die "Python 3.11-3.13 is required. Python 3.14 is not supported due to venv bugs. Install from https://python.org and try again."
 info "Using $(${PYTHON} --version)"
 
 # ── 2. Try pipx (cleanest path) ──────────────────────────────────────────────
