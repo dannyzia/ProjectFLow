@@ -183,9 +183,17 @@ def load_config(config_path: Path) -> FullConfig:
     agents_data = raw_data.get("agents", {})
     agents_list = []
 
-    for slug, agent_data in agents_data.items():
-        agent = _parse_agent(slug, agent_data)
-        agents_list.append(agent)
+    # Handle both dict format (slug: data) and list format ([] or [{slug, ...}])
+    if isinstance(agents_data, dict):
+        for slug, agent_data in agents_data.items():
+            agent = _parse_agent(slug, agent_data)
+            agents_list.append(agent)
+    elif isinstance(agents_data, list):
+        # If it's a list of dicts with 'slug' key, or empty list
+        for item in agents_data:
+            if isinstance(item, dict) and "slug" in item:
+                agent = _parse_agent(item["slug"], item)
+                agents_list.append(agent)
 
     # Step 7: Load prompt text for each agent
     config_dir = config_path.parent
