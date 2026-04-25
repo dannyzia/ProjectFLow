@@ -96,6 +96,57 @@ def load_builtin_skills() -> list[SkillConfig]:
     return skills
 
 
+def load_builtin_agents() -> list[AgentConfig]:
+    """Load default agents from data/agents/*.yml.
+
+    File presence = registration — no hardcoding required.
+    """
+    agents_dir = Path(__file__).parent / "data" / "agents"
+    agents = []
+    for agent_file in sorted(agents_dir.glob("*.yml")):
+        try:
+            with open(agent_file, "r", encoding=DEFAULT_ENCODING) as f:
+                data = yaml.safe_load(f)
+            if not data or "slug" not in data:
+                continue
+
+            # Parse handoffs if present
+            handoffs = []
+            for h in data.get("handoffs", []):
+                handoffs.append(
+                    AgentHandoff(
+                        label=h.get("label", ""),
+                        agent_slug=h.get("agent", ""),
+                        prompt=h.get("description", ""),
+                        model=h.get("model", ""),
+                    )
+                )
+
+            # Parse models
+            models_data = data.get("models", {})
+            models = AgentModels(
+                vscode_id=models_data.get("vscode", ""),
+                kilo_id=models_data.get("kilo", ""),
+            )
+
+            agents.append(
+                AgentConfig(
+                    slug=data.get("slug", ""),
+                    display_name=data.get("name", ""),
+                    description=data.get("description", ""),
+                    prompt_file=data.get("prompt_file", ""),
+                    prompt_text=data.get("prompt_text", ""),
+                    tools=data.get("tools", []),
+                    models=models,
+                    handoffs=handoffs,
+                    allowed_agents=data.get("allowed_agents", []),
+                )
+            )
+        except Exception:
+            logger.warning("Failed to load builtin agent: %s", agent_file.name)
+    return agents
+
+
 def load_config(config_path: Path) -> FullConfig:
     """Load project-flow.yml and return a FullConfig object with all agent prompts loaded.
 
@@ -207,6 +258,13 @@ def load_config(config_path: Path) -> FullConfig:
             except FileNotFoundError:
                 agent.prompt_text = f"PROMPT FILE NOT FOUND: {prompt_path}"
                 logger.warning(f"Agent prompt file not found: {prompt_path}")
+
+    # Step 7b: Merge builtin agents (file-based, no hardcoding)
+    if raw_data.get("generic_agents", True):
+        project_agent_slugs = {a.slug for a in agents_list}
+        for builtin in load_builtin_agents():
+            if builtin.slug not in project_agent_slugs:
+                agents_list.append(builtin)
 
     # Step 8: Extract and parse the 'prompts' section
     prompts_data = raw_data.get("prompts", [])

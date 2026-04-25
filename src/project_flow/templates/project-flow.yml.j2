@@ -11,7 +11,7 @@ project:
     - "docs/Plan/03-TECH-STACK.md"
 
 ides:
-  vscode: false
+  vscode: true
   kilo: false
   cursor: false
   windsurf: false
@@ -21,6 +21,15 @@ ides:
   claude: false
   antigravity: false
 
-prompts: []
-skills: []
+# Use builtin agents and skills by default
+generic_agents: true
+generic_skills: true
+
+# User-defined agents (builtin agents will be merged)
 agents: []
+
+# User-defined skills (builtin skills will be merged)
+skills: []
+
+# User-defined prompts
+prompts: []
