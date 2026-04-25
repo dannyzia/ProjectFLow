@@ -341,14 +341,15 @@ def load_config(config_path: Path) -> FullConfig:
     # Step 11: Extract agent_params (optional — template variables for agent prompts)
     agent_params_data = raw_data.get("agent_params", {})
     # Flatten: merge _global params into each agent's params
-    global_params = agent_params_data.get("_global", {})
     agent_params = {}
-    for key, params in agent_params_data.items():
-        if key == "_global":
-            continue
-        merged = dict(global_params)
-        merged.update(params if isinstance(params, dict) else {})
-        agent_params[key] = merged
+    if isinstance(agent_params_data, dict):
+        global_params = agent_params_data.get("_global", {})
+        for key, params in agent_params_data.items():
+            if key == "_global":
+                continue
+            merged = dict(global_params)
+            merged.update(params if isinstance(params, dict) else {})
+            agent_params[key] = merged
 
     # Step 12: Create and return the FullConfig
     return FullConfig(
