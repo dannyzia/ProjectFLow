@@ -29,12 +29,12 @@
 
 **Linux / macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/dannyzia/ProjectFLow/main/install.sh | bash
+curl -fsSL https://projectflow.digital-papyrus.xyz/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/dannyzia/ProjectFLow/main/install.ps1 | iex
+irm https://projectflow.digital-papyrus.xyz/install.ps1 | iex
 ```
 
 The script auto-detects your OS, installs into an isolated environment (no admin rights needed on most systems), and adds `project-flow` to your PATH.  Restart your terminal after install if the command isn't found immediately.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Project Flow — one-command installer for Linux and macOS
-# Usage: curl -fsSL https://raw.githubusercontent.com/dannyzia/ProjectFLow/main/install.sh | bash
+# Usage: curl -fsSL https://projectflow.digital-papyrus.xyz/install.sh | bash
 
 set -e
 

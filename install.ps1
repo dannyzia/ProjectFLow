@@ -1,5 +1,5 @@
 # Project Flow — one-command installer for Windows (PowerShell)
-# Usage: irm https://raw.githubusercontent.com/dannyzia/ProjectFLow/main/install.ps1 | iex
+# Usage: irm https://projectflow.digital-papyrus.xyz/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 $REPO = "git+https://github.com/dannyzia/ProjectFLow.git"
